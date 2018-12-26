@@ -1,15 +1,16 @@
-package ticTacToe;
+package ticTacToe.ai;
+
+import ticTacToe.game.Cell;
+import ticTacToe.game.GameResult;
 
 import java.util.List;
 
-import static ticTacToe.Game.*;
+import static ticTacToe.game.Game.*;
 
 /**
  *  Class that implements algorithm minimax to find the best move *
  */
 public class MiniMax extends GameResult {
-
-
     /**
      * minimax method that completes recursively until the terminal game state will not found
      *
@@ -18,33 +19,34 @@ public class MiniMax extends GameResult {
      *
      * @param field game field that should be analysed
      * @param activeFigure figure that should moves now
+     * @param currentPlayerFigure player figure that should moves now
      * @return cell with best move coordinates and it rate
      */
-    public Cell minimax (int[][] field, int activeFigure) {
+    public Cell minimax (int[][] field, int activeFigure, int currentPlayerFigure) {
         Cell cell = new Cell(0,0);
         int computer;
-        int human;
+        int rival;
         int nodeRate;
         int bestNodeIndex = 0;
 
-        List<Cell> emptyCells = emptyCells();
+        List<Cell> emptyCells = emptyCells(field);
 
 
-        if ( getFirstPlayerTriggered() == Players.PLAYER2 ) {
+        if ( currentPlayerFigure == CROSS ) {
             computer = CROSS;
-            human = ZERO;
+            rival = ZERO;
         } else {
             computer = ZERO;
-            human = CROSS;
+            rival = CROSS;
         }
 
         if (win(field, computer)) {
             cell.rate = 10;
             return cell;
-        } else if (win(field, human)) {
+        } else if (win(field, rival)) {
             cell.rate = -10;
             return cell;
-        } else if (emptyCells.isEmpty()) {
+        } else if (emptyCells(field).isEmpty()) {
             cell.rate = 0;
             return cell;
         }
@@ -54,9 +56,9 @@ public class MiniMax extends GameResult {
             field[cell.s][cell.r] = activeFigure;
 
             if (activeFigure == computer) {
-                cell.rate = minimax(field,human).rate ;
+                cell.rate = minimax(field, rival, currentPlayerFigure).rate ;
             } else {
-                cell.rate  = minimax(field,computer).rate ;
+                cell.rate  = minimax(field, computer, currentPlayerFigure).rate ;
             }
             field[cell.s][cell.r] = EMPTY;
             emptyCells.set(i, cell);

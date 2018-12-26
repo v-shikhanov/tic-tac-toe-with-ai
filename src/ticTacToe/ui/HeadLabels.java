@@ -1,15 +1,16 @@
-package ticTacToe;
+package ticTacToe.ui;
 
 import javax.swing.*;
 import java.awt.*;
 
 
 /**
- *  Class for head labels User interface element
+ *  Class for head labels User interface element creation
  * @see UserInterface
  */
-public class HeadLabels {
-    public JPanel createHeadLabels() {
+ class HeadLabels {
+
+     JPanel createHeadLabels() {
         JPanel head = new JPanel();
         Font font = new Font(null,Font.BOLD,13);
 

@@ -1,9 +1,12 @@
-package ticTacToe;
+package ticTacToe.ui;
+
+import ticTacToe.game.Game;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static ticTacToe.Game.*;
+import static ticTacToe.game.Game.*;
+import static ticTacToe.ui.UserInterface.game;
 
 /**
  *  Class for Game Button ui element, contains button, and it coordinate according to field matrix
@@ -14,17 +17,27 @@ public class GameButton extends JFrame{
     private int string;
     private int row;
 
-    GameButton(int string, int row){
+    GameButton(int string, int row, int size){
         this.string = string;
         this.row = row;
+        int fontSize;
+        switch (game.getFieldSize()) {
+            case 3 : fontSize = 140; break;
+            case 4 : fontSize = 90; break;
+            case 5 : fontSize = 60; break;
+            case 6 : fontSize = 45; break;
+            default : fontSize = 15; break;
+        }
 
-        Font font = new Font(null,Font.BOLD,100);
-        Dimension dimension = new Dimension(135,135);
-        button.setPreferredSize(new Dimension(dimension));
+        Font font = new Font(null,Font.BOLD,fontSize);
+        Dimension dimension = new Dimension(size,size);
+        button.setMinimumSize(new Dimension(dimension));
+        button.setMaximumSize(new Dimension(dimension));
         button.setFont(font);
         printFieldElement();
         button.addActionListener( actionEvent -> getUserSelection());
     }
+
     /**
      *  method that updates button text according to field matrix element
      *  that it was bound by string and row parameter
@@ -32,8 +45,7 @@ public class GameButton extends JFrame{
      * @see Game
      */
     public void printFieldElement() {
-        int val = getFieldValue(string,row);
-
+        int val = game.getFieldValue(string,row);
         switch (val) {
             case ZERO : {
                 button.setText("O");
@@ -50,20 +62,17 @@ public class GameButton extends JFrame{
             default : break;
         }
     }
+
     /**
      *  method that process user selection to button
      */
     private void getUserSelection () {
-        if (isGameStarted()) {
-            setFieldValue(string,row, getActiveFigure() , true);
-            printFieldElement();
+        if (game.isGameStarted()) {
             button.setEnabled(false);
-            new GameResult().checkGameResult();
-            if (isGameStarted()) {
-                new ComputerRival().makeMove();
-            }
+            game.nextMove(string,row, game.getActiveFigure());
         }
     }
+
     /**
      * Button state setter
      * @param state enable button when true
@@ -79,10 +88,16 @@ public class GameButton extends JFrame{
         button.setEnabled(false);
         printFieldElement();
     }
+
     /**
         button getter
      */
     public JButton getButton() {
         return button;
+    }
+
+    public static int foundSize(int qnt) {
+        int width = 445;
+        return ((width - 5 * (qnt - 1)) / qnt) -1;
     }
 }

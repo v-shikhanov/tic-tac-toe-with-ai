@@ -1,9 +1,9 @@
 package ticTacToe;
 
-public class Main {
+import ticTacToe.ui.UserInterface;
 
+public class Main {
     public static void main(String[] args) {
-        UserInterface userInterface = new UserInterface();
-        userInterface.window();
+        new UserInterface(3);
     }
 }
