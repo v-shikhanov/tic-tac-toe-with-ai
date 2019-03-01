@@ -11,12 +11,12 @@ import java.awt.*;
 public class UserInterface extends JFrame {
 
     /**
-     *  Instance of game class which would be controlled via this UI
+     * Instance of game class which would be controlled via this UI
      */
     public static Game game;
 
     /**
-     *  buttons matrix that bound to field with matrix values
+     * buttons matrix that bound to field with matrix values
      * @see GameButton
      * @see Game
      */
@@ -89,10 +89,9 @@ public class UserInterface extends JFrame {
      * @return line of buttons
      */
     private JPanel formLine(GameButton b[]) {
-
         JPanel buttonsLine = new JPanel();
-
         GroupLayout groupLayout = new GroupLayout(buttonsLine);
+
         buttonsLine.setLayout(groupLayout);
         GroupLayout.ParallelGroup parallelGroup = groupLayout.createParallelGroup();
         GroupLayout.SequentialGroup sequentialGroup = groupLayout.createSequentialGroup();
@@ -105,11 +104,8 @@ public class UserInterface extends JFrame {
         }
         groupLayout.setVerticalGroup(parallelGroup);
         groupLayout.setHorizontalGroup(sequentialGroup);
-
-
         return buttonsLine;
     }
-
 
     /**
      * creates layout compiling table of stings
@@ -183,6 +179,17 @@ public class UserInterface extends JFrame {
          dispose();
          new UserInterface(newSize);
      }
+    /**
+     * This method updates a text inside a button after computer makes a move, and disable it for user
+     *
+     * @param string number in field matrix
+     * @param row number in field matrix
+     */
+    public static void buttonsUpdate(int string, int row) {
+        button[string][row].printFieldElement();
+        button[string][row].setButtonEnabled(false);
+        game.nextMove(string, row, game.getActiveFigure());
+    }
 
     /**
      * getters of class

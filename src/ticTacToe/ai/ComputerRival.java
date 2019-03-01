@@ -17,7 +17,7 @@ import static ticTacToe.ui.UserInterface.game;
 public class ComputerRival {
 
      /**
-     * Easy level method - randomly selects cell in field
+      * Easy level method - randomly selects cell in field
       * @param field where should be found a coordinate of move
       * @return move coordinate Cell
      */
@@ -92,17 +92,5 @@ public class ComputerRival {
                 return hard(game.getFieldValues(), game.getActiveFigure(), game.getActiveFigure());
             }
         }
-    }
-
-    /**
-     * This method updates a text inside a button after computer makes a move, and disable it for user
-     *
-     * @param string number in field matrix
-     * @param row number in field matrix
-     */
-    public static void dataUpdate(int string, int row) {
-        UserInterface.getButton(string, row).printFieldElement();
-        UserInterface.getButton(string, row).setButtonEnabled(false);
-        game.nextMove(string, row, game.getActiveFigure());
     }
 }

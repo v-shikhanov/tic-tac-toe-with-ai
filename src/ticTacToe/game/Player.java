@@ -1,6 +1,7 @@
 package ticTacToe.game;
 
 import ticTacToe.ai.ComputerRival;
+import ticTacToe.ui.UserInterface;
 
 import static ticTacToe.ui.UserInterface.game;
 
@@ -40,7 +41,7 @@ public class Player {
                 case HARD: cell = computerRival.hard(game.getFieldValues(), game.getActiveFigure(), this.figure); break;
                 case LEARNING: cell = computerRival.learning(); break;
             }
-            ComputerRival.dataUpdate(cell.s, cell.r);
+            UserInterface.buttonsUpdate(cell.s, cell.r);
         }
 
     }
