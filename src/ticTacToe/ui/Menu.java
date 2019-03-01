@@ -55,7 +55,7 @@ import static ticTacToe.ui.UserInterface.game;
 
         start.addActionListener( actionEvent -> game.startTheGame());
         restart.addActionListener( actionEvent -> game.restartTheGame());
-        stop.addActionListener( actionEvent -> game.stopTheGame());
+        stop.addActionListener( actionEvent -> game.stopGame());
 
         file.add(start);
         file.add(restart);
@@ -208,7 +208,7 @@ import static ticTacToe.ui.UserInterface.game;
     }
 
     /**
-     *  method starts learning process thread if it's not already started and nobody playing at this moment
+     *  method starts learning process thread if it'string not already started and nobody playing at this moment
      */
     private void startLearning() {
         if (game.isGameStarted()) {

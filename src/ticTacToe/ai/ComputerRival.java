@@ -1,14 +1,14 @@
 package ticTacToe.ai;
 
 import ticTacToe.game.Cell;
+import ticTacToe.game.Game;
 import ticTacToe.game.GameResult;
-import ticTacToe.ui.UserInterface;
 
 import java.util.List;
 import java.util.Random;
 
-import static ticTacToe.game.Game.CROSS;
-import static ticTacToe.game.Game.ZERO;
+import static ticTacToe.game.Game.Figure.CROSS;
+import static ticTacToe.game.Game.Figure.ZERO;
 import static ticTacToe.ui.UserInterface.game;
 
 /**
@@ -21,7 +21,7 @@ public class ComputerRival {
       * @param field where should be found a coordinate of move
       * @return move coordinate Cell
      */
-    public Cell easy(int[][] field) {
+    public Cell easy(Game.Figure[][] field) {
         List<Cell> emptyCells = new GameResult().emptyCells(field);
         int size = emptyCells.size();
         if (size > 0) {
@@ -38,8 +38,8 @@ public class ComputerRival {
      */
     public Cell medium() {
         MediumLevel mediumLevel = new MediumLevel();
-        int valueOfComputer = game.getActiveFigure();
-        int valueOfHuman;
+        Game.Figure valueOfComputer = game.getActiveFigure();
+        Game.Figure valueOfHuman;
         Cell cell = mediumLevel.scan(valueOfComputer);
         if (cell != null) {
             return cell;
@@ -56,7 +56,7 @@ public class ComputerRival {
             return cell;
         }
 
-        return easy(game.getFieldValues());
+        return easy(game.getGameField());
     }
 
     /**
@@ -67,10 +67,10 @@ public class ComputerRival {
      *                     mininmax algorithm
      * @return move coordinate Cell
      */
-    public Cell hard(int[][] field, int activeFigure, int playerFigure) {
+    public Cell hard(Game.Figure[][] field, Game.Figure activeFigure, Game.Figure playerFigure) {
 
-        if (new GameResult().emptyCells(game.getFieldValues()).size() > 8) {
-            return easy(game.getFieldValues());
+        if (new GameResult().emptyCells(game.getGameField()).size() > 8) {
+            return easy(game.getGameField());
         }
 
 
@@ -84,12 +84,12 @@ public class ComputerRival {
      */
     public Cell learning() {
         if (game.isLearningInProcess()) {
-            return hard(game.getFieldValues(), game.getActiveFigure(), game.getActiveFigure());
+            return hard(game.getGameField(), game.getActiveFigure(), game.getActiveFigure());
         } else {
             if ( game.learningAlgorithm.isLoadedFromFile()) {
-                return game.learningAlgorithm.makeMove(game.getFieldValues());
+                return game.learningAlgorithm.makeMove(game.getGameField());
             } else {
-                return hard(game.getFieldValues(), game.getActiveFigure(), game.getActiveFigure());
+                return hard(game.getGameField(), game.getActiveFigure(), game.getActiveFigure());
             }
         }
     }

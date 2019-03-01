@@ -39,9 +39,14 @@ public class Game {
     /**
      *  Constants for cell state identification
      */
-    public static final int ZERO = 0;
-    public static final int CROSS = 1;
-    public static final int EMPTY = 2;
+    public enum Figure {
+        ZERO,
+        CROSS,
+        EMPTY
+    }
+//    public static final int ZERO = 0;
+//    public static final int CROSS = 1;
+//    public static final int EMPTY = 2;
 
     /**
      *  Players declaration
@@ -65,37 +70,38 @@ public class Game {
     private boolean gameStarted;
 
     /**
-     *  Contains game field and it's size.
+     *  Contains game field and it'string size.
      */
-    private  int fieldSize;
-    private  int[][] fieldValues;
+    private int fieldSize;
+    private Figure[][] gameField;
 
     /**
-     *  field contains information about learning process. is it active or not. To avoid problems with multiply
-     *  threading
+     * field contains information about learning process. is it active or not. To avoid problems with multiply
+     * threading
      */
     private boolean learningInProcess;
 
     /**
-     *  Contains which figure is active now - zero or cross
+     * Contains which figure is active now - zero or cross
      */
-    private int activeFigure;
+    private Figure activeFigure;
 
     /**
-     *  Construvtor of class
+     * Constructor of class
      * @param fieldSize size of game field, configured by UI
      * @see UserInterface
      */
     public Game(int fieldSize) {
-        this.player1 = new Player(CROSS);
-        this.player2 = new Player(ZERO);
-        this.firstPlayerUserSelection = FirstPlayerSelect.RANDOM;
-        this.gameStarted = false;
-        this.fieldValues = new int[fieldSize][fieldSize];
+        player1 = new Player(Figure.CROSS);
+        player2 = new Player(Figure.ZERO);
+        firstPlayerUserSelection = FirstPlayerSelect.RANDOM;
+        gameStarted = false;
+        gameField = new Figure[fieldSize][fieldSize];
         this.fieldSize = fieldSize;
-        this.activeFigure = CROSS;
-        this.learningAlgorithm = new LearningAlgorithm(fieldSize);
-        this.learningAlgorithm.start();
+        setFieldEmpty();
+        activeFigure = Figure.CROSS;
+        learningAlgorithm = new LearningAlgorithm(fieldSize);
+        learningAlgorithm.start();
     }
 
     /**
@@ -115,30 +121,30 @@ public class Game {
         }
 
         gameStarted = true;
-        activeFigure = CROSS;
+        activeFigure = Figure.CROSS;
 
         switch (firstPlayerUserSelection) {
             case PLAYER1 : {
                 currentPlayer = player1;
-                player1.setFigure(CROSS);
-                player2.setFigure(ZERO);
+                player1.setFigure(Figure.CROSS);
+                player2.setFigure(Figure.ZERO);
                 break;
             }
             case PLAYER2 : {
                 currentPlayer = player2;
-                player1.setFigure(ZERO);
-                player2.setFigure(CROSS);
+                player1.setFigure(Figure.ZERO);
+                player2.setFigure(Figure.CROSS);
                 break;
             }
             case RANDOM : {
                 if (new Random().nextBoolean()) {
                     currentPlayer = player2;
-                    player1.setFigure(ZERO);
-                    player2.setFigure(CROSS);
+                    player1.setFigure(Figure.ZERO);
+                    player2.setFigure(Figure.CROSS);
                 } else {
                     currentPlayer = player1;
-                    player1.setFigure(CROSS);
-                    player2.setFigure(ZERO);
+                    player1.setFigure(Figure.CROSS);
+                    player2.setFigure(Figure.ZERO);
                 }
                 break;
             }
@@ -148,7 +154,7 @@ public class Game {
 
         for ( int i = 0; i < fieldSize; i++) {
             for ( int j = 0; j < fieldSize; j++) {
-                updateField(i,j, EMPTY);
+                updateField(i,j, Figure.EMPTY);
                 UserInterface.getButton(i,j).printFieldElement();
                 UserInterface.getButton(i,j).setButtonEnabled(true);
             }
@@ -168,14 +174,25 @@ public class Game {
     /**
      *  method resets field but not starting a new game
      */
-    public void stopTheGame(){
+    public void stopGame() {
         gameStarted = false;
         currentPlayer = null;
         new DisplayPlayer().display();
-        for ( int i = 0; i < fieldSize; i++) {
+        for (int i = 0; i < fieldSize; i++) {
             for ( int j = 0; j < fieldSize; j++) {
-                updateField(i,j, EMPTY);
+                updateField(i,j, Figure.EMPTY);
                 UserInterface.getButton(i,j).setWaitingForGame();
+            }
+        }
+    }
+
+    /**
+     * Method sets all elements of field empty
+     */
+    private void setFieldEmpty() {
+        for (int i = 0; i < fieldSize; i++) {
+            for ( int j = 0; j < fieldSize; j++) {
+                updateField(i,j, Figure.EMPTY);
             }
         }
     }
@@ -207,16 +224,16 @@ public class Game {
      * @see Player
      * @see DisplayPlayer
      */
-    public void nextMove(int string, int row, int fieldValue) {
+    public void nextMove(int string, int row, Figure fieldValue) {
         updateField(string,row,fieldValue);
         UserInterface.getButton(string,row).printFieldElement();
 
         new GameResult().checkGameResult();
 
-        if (getActiveFigure() == CROSS) {
-            activeFigure = ZERO;
+        if (getActiveFigure() == Figure.CROSS) {
+            activeFigure = Figure.ZERO;
         } else {
-            activeFigure = CROSS;
+            activeFigure = Figure.CROSS;
         }
 
         if (currentPlayer == player1) {
@@ -238,23 +255,23 @@ public class Game {
      * @param row number of row
      * @param fieldValue valuethat should be written
      */
-    public void updateField(int string, int row, int fieldValue) {
-        fieldValues[string][row] = fieldValue;
+    public void updateField(int string, int row, Figure fieldValue) {
+        gameField[string][row] = fieldValue;
     }
 
     /**
      * getters and setters for game parameters
      */
-    public  int getActiveFigure() {
+    public Figure getActiveFigure() {
         return activeFigure;
     }
 
-    public  int getFieldValue(Integer string, Integer row) {
-        return fieldValues[string][row];
+    public Figure getFieldValue(Integer string, Integer row) {
+        return gameField[string][row];
     }
 
-    public  int[][] getFieldValues() {
-        return fieldValues;
+    public Figure[][] getGameField() {
+        return gameField;
     }
 
     public  void setFirstPlayerUserSelection(FirstPlayerSelect firstPlayerUserSelection) {

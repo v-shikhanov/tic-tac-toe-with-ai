@@ -45,7 +45,7 @@ public class GameButton extends JFrame{
      * @see Game
      */
     public void printFieldElement() {
-        int val = game.getFieldValue(string,row);
+        Figure val = game.getFieldValue(string,row);
         switch (val) {
             case ZERO : {
                 button.setText("O");

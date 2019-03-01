@@ -9,13 +9,13 @@ import ticTacToe.ai.MiniMax;
  * @see ticTacToe.ai.SelfLearning
  */
 public class Cell {
-    public int s;
-    public int r;
+    public int string;
+    public int row;
     public int rate;
 
     public Cell(int string, int row) {
-        this.s = string;
-        this.r = row;
+        this.string = string;
+        this.row = row;
         this.rate = 0;
     }
 }

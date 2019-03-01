@@ -3,6 +3,7 @@ package ticTacToe.ai;
 import ticTacToe.game.Cell;
 
 import static ticTacToe.game.Game.*;
+import static ticTacToe.game.Game.Figure.EMPTY;
 import static ticTacToe.ui.UserInterface.game;
 
 /**
@@ -17,7 +18,7 @@ public class MediumLevel {
      * of any player
      * @param figure which combination should be checked
      */
-    public Cell scan(int figure) {
+    public Cell scan(Figure figure) {
 
         Cell cell = scanDown(figure);
         if (cell != null) {
@@ -34,7 +35,7 @@ public class MediumLevel {
         return null;
     }
 
-    private Cell scanDown(int value) {
+    private Cell scanDown(Figure value) {
         for( int r = 0; r < game.getFieldSize(); r++) {
             if (game.getFieldValue(0, r) == value &&
                     game.getFieldValue(1, r) == value &&
@@ -57,7 +58,7 @@ public class MediumLevel {
 
 
 
-    private Cell scanRight(int value) {
+    private Cell scanRight(Figure value) {
         for( int s = 0; s < game.getFieldSize(); s++) {
             if ((game.getFieldValue(s, 0) == value) &&
                     (game.getFieldValue(s, 1) == value) &&
@@ -78,7 +79,7 @@ public class MediumLevel {
         return null;
     }
 
-    private  Cell scanDiagonal(int value) {
+    private  Cell scanDiagonal(Figure value) {
         /*
             Check that first diagonal equal and not null
          */

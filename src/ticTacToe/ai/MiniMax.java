@@ -1,11 +1,12 @@
 package ticTacToe.ai;
 
 import ticTacToe.game.Cell;
+import ticTacToe.game.Game;
 import ticTacToe.game.GameResult;
 
 import java.util.List;
 
-import static ticTacToe.game.Game.*;
+import static ticTacToe.game.Game.Figure.*;
 
 /**
  *  Class that implements algorithm minimax to find the best move *
@@ -22,10 +23,10 @@ public class MiniMax extends GameResult {
      * @param currentPlayerFigure player figure that should moves now
      * @return cell with best move coordinates and it rate
      */
-    public Cell minimax (int[][] field, int activeFigure, int currentPlayerFigure) {
+    public Cell minimax (Game.Figure[][] field, Game.Figure activeFigure, Game.Figure currentPlayerFigure) {
         Cell cell = new Cell(0,0);
-        int computer;
-        int rival;
+        Game.Figure computer;
+        Game.Figure rival;
         int nodeRate;
         int bestNodeIndex = 0;
 
@@ -53,14 +54,14 @@ public class MiniMax extends GameResult {
 
         for ( int i = 0; i < emptyCells.size(); i++) {
             cell= emptyCells.get(i);
-            field[cell.s][cell.r] = activeFigure;
+            field[cell.string][cell.row] = activeFigure;
 
             if (activeFigure == computer) {
                 cell.rate = minimax(field, rival, currentPlayerFigure).rate ;
             } else {
                 cell.rate  = minimax(field, computer, currentPlayerFigure).rate ;
             }
-            field[cell.s][cell.r] = EMPTY;
+            field[cell.string][cell.row] = EMPTY;
             emptyCells.set(i, cell);
         }
 

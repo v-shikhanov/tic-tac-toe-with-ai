@@ -50,7 +50,7 @@ public class UserInterface extends JFrame {
         this.fieldSize = fieldSize;
         game =  new Game(fieldSize);
         button = new GameButton[fieldSize][fieldSize];
-        createGameField();
+        createGameFieldUI();
 
         setSize(dimension);
         setResizable(false);
@@ -60,14 +60,14 @@ public class UserInterface extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        game.stopTheGame();
+        game.stopGame();
 
     }
 
     /**
      * Methods bounds buttons to matrix, creates bars of menu,labels, players name and buttons     *
      */
-    private void createGameField() {
+    private void createGameFieldUI() {
         JPanel topBar = createTopBar();
         JPanel headLabels = new HeadLabels().createHeadLabels();
         JPanel head = new Head().createHead();

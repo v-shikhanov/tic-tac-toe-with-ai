@@ -6,6 +6,7 @@ import ticTacToe.game.*;
 import javax.swing.*;
 import java.util.ArrayList;
 
+import static ticTacToe.game.Game.Figure.*;
 import static ticTacToe.ui.UserInterface.game;
 
 /**
@@ -36,7 +37,7 @@ public class SelfLearning extends Thread{
     }
 
     /**
-     *  it's a game process which starts in new thread for non-blocking application work
+     *  it'string a game process which starts in new thread for non-blocking application work
      */
     @Override
     public void run() {
@@ -70,12 +71,12 @@ public class SelfLearning extends Thread{
 
     private void selfLearningGame() {
         int size = game.getFieldSize();
-        int[][] field = new int[size][size];
-        int activeFigure = Game.CROSS;
+        Game.Figure[][] field = new Game.Figure[size][size];
+        Game.Figure activeFigure = CROSS;
 
         for ( int i = 0; i < field.length; i++) {
             for ( int j = 0; j < field.length; j++) {
-                field[i][j] = 2;
+                field[i][j] = EMPTY;
             }
         }
 
@@ -85,10 +86,10 @@ public class SelfLearning extends Thread{
                 return;
             }
 
-            if (activeFigure == Game.CROSS) {
-                activeFigure = Game.ZERO;
+            if (activeFigure == CROSS) {
+                activeFigure = ZERO;
             } else {
-                activeFigure = Game.CROSS;
+                activeFigure = CROSS;
             }
         }
     }
@@ -99,9 +100,9 @@ public class SelfLearning extends Thread{
      * @param activeFigure
      * @return
      */
-    private int[][] makeMove(int[][] field, int activeFigure) {
+    private Game.Figure[][] makeMove(Game.Figure[][] field, Game.Figure activeFigure) {
         Cell cell = new ComputerRival().easy(field);
-        field[cell.s][cell.r] = activeFigure;
+        field[cell.string][cell.row] = activeFigure;
         log.add(new FieldCoder().getCode(field));
         return field;
     }
@@ -111,17 +112,21 @@ public class SelfLearning extends Thread{
      * @param field
      * @return true if finished
      */
-    private boolean isGameFinished(int[][] field) {
+    private boolean isGameFinished(Game.Figure[][] field) {
         GameResult gameResult = new GameResult();
-        for (int i = 0; i < 2; i++) {
-            if (gameResult.win(field, i)) {
-                learningAlgorithm.updateFieldsMap(i, log);
-                return true;
-            }
+
+        if (gameResult.win(field, CROSS)) {
+            learningAlgorithm.updateFieldsMap(CROSS, log);
+            return true;
+        }
+
+        if (gameResult.win(field, ZERO)) {
+            learningAlgorithm.updateFieldsMap(ZERO, log);
+            return true;
         }
 
         if (gameResult.emptyCells(field).isEmpty()) {
-            learningAlgorithm.updateFieldsMap(Game.EMPTY,log);
+            learningAlgorithm.updateFieldsMap(EMPTY,log);
             return true;
         }
 

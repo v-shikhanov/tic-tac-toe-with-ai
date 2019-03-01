@@ -5,6 +5,7 @@ import ticTacToe.game.Player;
 
 import java.awt.*;
 
+import static ticTacToe.game.Game.Figure.ZERO;
 import static ticTacToe.ui.UserInterface.game;
 
 /**
@@ -23,7 +24,7 @@ public class DisplayPlayer {
         String activeFigure;
         Player active = game.getCurrentPlayer();
 
-        if (game.getActiveFigure() == Game.ZERO) {
+        if (game.getActiveFigure() == ZERO) {
             activeFigure = "O";
         } else {
             activeFigure = "X";

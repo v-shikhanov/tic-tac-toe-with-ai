@@ -5,7 +5,7 @@ import ticTacToe.game.*;
 import java.io.*;
 import java.util.*;
 
-import static ticTacToe.game.Game.EMPTY;
+import static ticTacToe.game.Game.Figure.*;
 import static ticTacToe.ui.UserInterface.game;
 
 /**
@@ -91,17 +91,17 @@ public class LearningAlgorithm extends Thread implements Serializable {
      * @param field
      * @return coordinate of move
      */
-    public Cell makeMove(int[][] field){
+    public Cell makeMove(Game.Figure[][] field){
         List<Cell> emptyCells = new GameResult().emptyCells(field);
         int currentRate = Integer.MIN_VALUE;
         int selectedMoveIndex = 0;
         Cell cell;
-        int activeFigure = game.getActiveFigure();
+        Game.Figure activeFigure = game.getActiveFigure();
 
         for (int i = 0; i < emptyCells.size(); i++) {
             long code;
             cell = emptyCells.get(i);
-            field[cell.s][cell.r] = activeFigure;
+            field[cell.string][cell.row] = activeFigure;
             code = new FieldCoder().getCode(field);
 
             if (fieldsMap.containsKey(code)) {
@@ -113,27 +113,27 @@ public class LearningAlgorithm extends Thread implements Serializable {
                 currentRate = cell.rate;
             }
 
-            field[cell.s][cell.r] = EMPTY;
+            field[cell.string][cell.row] = EMPTY;
         }
 
         cell = emptyCells.get(selectedMoveIndex);
-        field[cell.s][cell.r] = game.getActiveFigure();
+        field[cell.string][cell.row] = game.getActiveFigure();
         return cell;
     }
 
     /**
      * Method updates fields collection and rates of existing elements
      * @param result which figure wins- X or O
-     * @param movesLog list of fields converted to long. it's moves that were made in this game
+     * @param movesLog list of fields converted to long. it'string moves that were made in this game
      */
-    public void updateFieldsMap(int result, List<Long> movesLog) {
+    public void updateFieldsMap(Game.Figure result, List<Long> movesLog) {
         int rateX = 0;
         int rate0 = 0;
 
-        if (result == Game.CROSS) {
+        if (result == CROSS) {
             rateX = 1;
             rate0 = -1;
-        } else if (result == Game.ZERO) {
+        } else if (result == ZERO) {
             rateX = -1;
             rate0 = 1;
         }
@@ -205,7 +205,7 @@ public class LearningAlgorithm extends Thread implements Serializable {
 
     /**
      *  Class contains rates which are used in learning process and in move making
-     *  It's bound to a key value in fields map and characterised move for X player and for O player
+     *  It'string bound to a key value in fields map and characterised move for X player and for O player
      */
     private class Rate implements Serializable{
         private int rateX;
@@ -216,8 +216,8 @@ public class LearningAlgorithm extends Thread implements Serializable {
             this.rate0 = rate0;
         }
 
-        public int getRate(int activeFigure ) {
-            if (activeFigure == Game.CROSS) {
+        public int getRate(Game.Figure activeFigure ) {
+            if (activeFigure == CROSS) {
                 return rateX;
             } else {
                 return rate0;

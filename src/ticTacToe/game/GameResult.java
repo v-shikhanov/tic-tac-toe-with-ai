@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ticTacToe.game.Game.*;
+import static ticTacToe.game.Game.Figure.*;
 import static ticTacToe.ui.UserInterface.game;
 
 /**
@@ -19,13 +20,15 @@ public class GameResult {
      * Method checks game win and tie for players 1 and 2
      */
     public  void checkGameResult() {
-        for (int i = 0; i < 2; i++ ){
-            if (win(game.getFieldValues(), i)) {
-                printGameResult(i);
-                return;
-            }
+        if (win(game.getGameField(), CROSS)) {
+            printGameResult(CROSS);
+            return;
+        } else if (win(game.getGameField(), ZERO)) {
+            printGameResult(ZERO);
+            return;
         }
-        if (emptyCells(game.getFieldValues()).isEmpty()) {
+
+        if (emptyCells(game.getGameField()).isEmpty()) {
             printGameResult(EMPTY);
         }
     }
@@ -36,7 +39,7 @@ public class GameResult {
      * @param figure figure for which game result should be checked
      * @return true if winning combination for given figure exists in field
      */
-    public boolean win(int[][] field, int figure) {
+    public boolean win(Figure[][] field, Figure figure) {
         for (int s = 0; s < game.getFieldSize(); s++) {
             for(int r = 0; r < game.getFieldSize(); r++) {
                 if (field[s][r] != figure) {
@@ -87,7 +90,7 @@ public class GameResult {
      * @param field field to check
      * @return list of cells
      */
-    public List<Cell> emptyCells(int[][] field) {
+    public List<Cell> emptyCells(Figure[][] field) {
         List<Cell> emptyCells = new ArrayList<>();
         for (int row = 0; row < field.length; row++) {
             for (int string = 0; string < field.length; string++) {
@@ -103,7 +106,7 @@ public class GameResult {
      * Open new information window according game result
      * @param result figure that win the game
      */
-    private void printGameResult(int result){
+    private void printGameResult(Figure result){
         String winnersName;
         switch (result) {
             case ZERO : {

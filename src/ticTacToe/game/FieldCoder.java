@@ -11,11 +11,20 @@ public class FieldCoder {
      * @param field
      * @return field in long number equivalent
      */
-    public long getCode(int[][] field) {
+    public long getCode(Game.Figure[][] field) {
         long code = 0;
         for (int s = 0; s < field.length; s++) {
             for (int r = 0; r < field.length; r++) {
-                code += field[s][r] * (Math.pow(3, (s*field.length + r)));
+                switch (field[s][r]) {
+                    case ZERO: {
+                        code += 1 * (Math.pow(3, (s*field.length + r)));
+                        break;
+                    }
+                    case CROSS: {
+                        code += 2 * (Math.pow(3, (s*field.length + r)));
+                        break;
+                    }
+                }
             }
         }
         return code;

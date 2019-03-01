@@ -14,7 +14,7 @@ public class Player {
     /**
      * for which figure player is playing 0 or X
      */
-    private int figure;
+    private Game.Figure figure;
 
     /**
      * Is player human(false), or computer (true)
@@ -26,7 +26,7 @@ public class Player {
      */
     private Game.Levels level;
 
-    public Player(int figure) {
+    public Player(Game.Figure figure) {
         this.figure = figure;
         this.computer = false;
         this.level = Game.Levels.MEDIUM;
@@ -36,12 +36,12 @@ public class Player {
         Cell cell = new Cell(0,0);
         if (computer && game.isGameStarted()) {
             switch (level) {
-                case EASY: cell = computerRival.easy(game.getFieldValues());break;
+                case EASY: cell = computerRival.easy(game.getGameField());break;
                 case MEDIUM: cell = computerRival.medium(); break;
-                case HARD: cell = computerRival.hard(game.getFieldValues(), game.getActiveFigure(), this.figure); break;
+                case HARD: cell = computerRival.hard(game.getGameField(), game.getActiveFigure(), figure); break;
                 case LEARNING: cell = computerRival.learning(); break;
             }
-            UserInterface.buttonsUpdate(cell.s, cell.r);
+            UserInterface.buttonsUpdate(cell.string, cell.row);
         }
 
     }
@@ -49,7 +49,7 @@ public class Player {
     /**
      * Getters and setters for player settings
      */
-    public void setFigure(int figure) {
+    public void setFigure(Game.Figure figure) {
         this.figure = figure;
     }
 
@@ -65,7 +65,7 @@ public class Player {
         this.level = level;
     }
 
-    public int getFigure() {
+    public Game.Figure getFigure() {
         return figure;
     }
 
