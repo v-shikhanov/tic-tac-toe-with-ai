@@ -7,51 +7,51 @@ import ticTacToe.game.GameResult;
 import java.util.List;
 import java.util.Random;
 
-import static ticTacToe.game.Game.Figure.CROSS;
-import static ticTacToe.game.Game.Figure.ZERO;
+import static ticTacToe.game.Game.Figure.*;
 import static ticTacToe.ui.UserInterface.game;
 
 /**
- *  Class for making moves against human or another computer
+ * Class for making moves against human or another computer
 */
 public class ComputerRival {
 
-     /**
-      * Easy level method - randomly selects cell in field
-      * @param field where should be found a coordinate of move
-      * @return move coordinate Cell
+    /**
+     * Qnt of empty cells when minimax algorithm working good.(If number of empty cells is greater than limit
+     * waiting of results is too long
      */
+    private static final int miniMaxDepthLimit = 8;
+
+    /**
+    * Easy level method - randomly selects cell in field
+    * @param field where should be found a coordinate of move
+    * @return move coordinate Cell
+    */
     public Cell easy(Game.Figure[][] field) {
         List<Cell> emptyCells = new GameResult().emptyCells(field);
-        int size = emptyCells.size();
-        if (size > 0) {
-            return emptyCells.get(new Random().nextInt(size));
-        } else {
-            return null;
-        }
+        return emptyCells.get(new Random().nextInt(emptyCells.size()));
     }
 
     /**
-     * method calls scanning of sequence, if it not found making a random move
+     * Method calls scanning of sequence, if it not found making a random move
      * @return move coordinate Cell
      * @see ComputerRival
      */
     public Cell medium() {
         MediumLevel mediumLevel = new MediumLevel();
         Game.Figure valueOfComputer = game.getActiveFigure();
-        Game.Figure valueOfHuman;
+        Game.Figure valueOfOpponent;
         Cell cell = mediumLevel.scan(valueOfComputer);
         if (cell != null) {
             return cell;
         }
 
         if (valueOfComputer == CROSS) {
-            valueOfHuman = ZERO;
+            valueOfOpponent = ZERO;
         } else {
-            valueOfHuman = CROSS;
+            valueOfOpponent = CROSS;
         }
 
-        cell = mediumLevel.scan(valueOfHuman);
+        cell = mediumLevel.scan(valueOfOpponent);
         if (cell != null) {
             return cell;
         }
@@ -69,10 +69,9 @@ public class ComputerRival {
      */
     public Cell hard(Game.Figure[][] field, Game.Figure activeFigure, Game.Figure playerFigure) {
 
-        if (new GameResult().emptyCells(game.getGameField()).size() > 8) {
+        if (new GameResult().emptyCells(game.getGameField()).size() > miniMaxDepthLimit) {
             return easy(game.getGameField());
         }
-
 
         Cell cell = new MiniMax().minimax(field, activeFigure, playerFigure);
         return cell;

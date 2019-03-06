@@ -55,7 +55,7 @@ import static ticTacToe.ui.UserInterface.game;
 
         start.addActionListener( actionEvent -> game.startTheGame());
         restart.addActionListener( actionEvent -> game.restartTheGame());
-        stop.addActionListener( actionEvent -> game.stopGame());
+        stop.addActionListener( actionEvent -> game.stopGame(true));
 
         file.add(start);
         file.add(restart);
@@ -166,17 +166,17 @@ import static ticTacToe.ui.UserInterface.game;
         random.setSelected(true);
 
         p1.addActionListener( actionEvent -> {
-            game.setFirstPlayerUserSelection(FirstPlayerSelect.PLAYER1);
+            game.setFirstPlayerUserSelection(FirstPlayerSelection.PLAYER1);
             p2.setSelected(false);
             random.setSelected(false);
         });
         p2.addActionListener( actionEvent -> {
-            game.setFirstPlayerUserSelection(FirstPlayerSelect.PLAYER2);
+            game.setFirstPlayerUserSelection(FirstPlayerSelection.PLAYER2);
             p1.setSelected(false);
             random.setSelected(false);
         });
         random.addActionListener( actionEvent -> {
-            game.setFirstPlayerUserSelection(FirstPlayerSelect.RANDOM);
+            game.setFirstPlayerUserSelection(FirstPlayerSelection.RANDOM);
             p1.setSelected(false);
             p2.setSelected(false);
         });

@@ -1,6 +1,5 @@
 package ticTacToe.ui;
 
-import ticTacToe.game.Game;
 import ticTacToe.game.Player;
 
 import java.awt.*;
@@ -16,13 +15,14 @@ public class DisplayPlayer {
     /**
      *  Base method which changed name of active player in text field "Now moves"
      *  and coloring names of players depending of game turn
+     * @param isGameFinished game status to dispalay active layer or message that game not started
      */
-    public void display() {
+    public void display(boolean isGameFinished) {
         Color moves = new Color(69, 222, 111);
         Color waiting = new Color(222, 85, 63);
         Color notStarted = new Color(179, 191, 216);
         String activeFigure;
-        Player active = game.getCurrentPlayer();
+        Player active = game.getActivePlayer();
 
         if (game.getActiveFigure() == ZERO) {
             activeFigure = "O";
@@ -30,7 +30,7 @@ public class DisplayPlayer {
             activeFigure = "X";
         }
 
-        if (active == null) {
+        if (isGameFinished) {
             UserInterface.getWhoMoves().setText("Not Started");
             UserInterface.getPlayer1().getTextField().setBackground(notStarted);
             UserInterface.getPlayer2().getTextField().setBackground(notStarted);

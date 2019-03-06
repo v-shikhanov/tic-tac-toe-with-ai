@@ -9,15 +9,18 @@ import java.awt.*;
  * Class that implements UI
  */
 public class UserInterface extends JFrame {
-
     /**
      * Instance of game class which would be controlled via this UI
      */
     public static Game game;
 
     /**
-     * buttons matrix that bound to field with matrix values
-     * @see GameButton
+     * Instance of class that updates names of players on text field
+     */
+    public static DisplayPlayer displayPlayer;
+
+    /**
+     * Buttons matrix that bound to field with matrix values
      * @see Game
      */
     private static GameButton[][] button;
@@ -42,7 +45,7 @@ public class UserInterface extends JFrame {
 
     /**
      * Constructor of class that creating UI and starts app
-     * @param fieldSize
+     * @param fieldSize size(length of side) of field 3 for 3x3, 4 for 4x4 etc
      */
     public UserInterface(int fieldSize) {
         Dimension dimension = new Dimension(480,610);
@@ -51,17 +54,16 @@ public class UserInterface extends JFrame {
         game =  new Game(fieldSize);
         button = new GameButton[fieldSize][fieldSize];
         createGameFieldUI();
-
+        game.updateField(true, false);
         setSize(dimension);
         setResizable(false);
         setMinimumSize(dimension);
-        setTitle("Game");
+        setTitle("Awesome tic-tac");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
-
-        game.stopGame();
-
+        displayPlayer = new DisplayPlayer();
+        displayPlayer.display(true);
     }
 
     /**
@@ -144,12 +146,10 @@ public class UserInterface extends JFrame {
      */
     public JPanel createTopBar() {
         JPanel topBar = new JPanel();
-
-
         JMenuBar menu = new Menu().menuCreator();
         String[] items = {"Classic 3x3","Big 4x4","Extra big 5x5","Crazy 6x6"};
-        fieldSizeSetup = new JComboBox<>(items);
 
+        fieldSizeSetup = new JComboBox<>(items);
         fieldSizeSetup.setSelectedIndex(fieldSize - 3);
         fieldSizeSetup.addActionListener( a -> changeFieldSize());
 
@@ -194,8 +194,8 @@ public class UserInterface extends JFrame {
     /**
      * getters of class
      */
-    public static GameButton getButton(int s, int r) {
-        return button[s][r];
+    public static GameButton getButton(int string, int row) {
+        return button[string][row];
     }
 
     public static GameTextField getPlayer1() {

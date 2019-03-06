@@ -3,31 +3,29 @@ package ticTacToe.game;
 import ticTacToe.ai.LearningAlgorithm;
 import ticTacToe.ui.DisplayPlayer;
 import ticTacToe.ui.UserInterface;
-
 import javax.swing.*;
 import java.util.Random;
-
 /**
  *  This class saves all game settings, and current parameters
  */
 public class Game {
 
     /**
-     *  Instance of learning algorithm class using in game.
+     * Instance of learning algorithm class using in game.
      */
     public LearningAlgorithm learningAlgorithm;
 
     /**
-     *  Using for game setting who moves first
+     * Using for game setting who moves first
      */
-    public enum FirstPlayerSelect {
+    public enum FirstPlayerSelection {
         PLAYER1,
         PLAYER2,
         RANDOM
     }
 
     /**
-     *  Using for game level identification
+     * Using for game level identification
      */
     public enum Levels {
         EASY,
@@ -37,32 +35,29 @@ public class Game {
     }
 
     /**
-     *  Constants for cell state identification
+     * Constants for cell state identification
      */
     public enum Figure {
         ZERO,
         CROSS,
         EMPTY
     }
-//    public static final int ZERO = 0;
-//    public static final int CROSS = 1;
-//    public static final int EMPTY = 2;
 
     /**
-     *  Players declaration
+     * Players declaration
      */
     private Player player1;
     private Player player2;
 
     /**
-     *  Contains setting for game start- which player should make first move
+     * Contains setting for game start- which player should make first move
      */
-    private FirstPlayerSelect firstPlayerUserSelection;
+    private FirstPlayerSelection firstPlayerUserSelection;
 
     /**
      *  Contains information which player turn now
      */
-    private Player currentPlayer;
+    private Player activePlayer;
 
     /**
      *  Parameter deactivating start game method after game start until it finished
@@ -86,37 +81,46 @@ public class Game {
      */
     private Figure activeFigure;
 
+    private GameResult gameResult;
+
     /**
      * Constructor of class
      * @param fieldSize size of game field, configured by UI
      * @see UserInterface
      */
     public Game(int fieldSize) {
+        gameResult = new GameResult();
         player1 = new Player(Figure.CROSS);
         player2 = new Player(Figure.ZERO);
-        firstPlayerUserSelection = FirstPlayerSelect.RANDOM;
+        this.fieldSize = fieldSize;
+        firstPlayerUserSelection = FirstPlayerSelection.RANDOM;
         gameStarted = false;
         gameField = new Figure[fieldSize][fieldSize];
-        this.fieldSize = fieldSize;
-        setFieldEmpty();
         activeFigure = Figure.CROSS;
         learningAlgorithm = new LearningAlgorithm(fieldSize);
         learningAlgorithm.start();
     }
 
     /**
-     *  method that configure game to a start position depending of game settings
+     * Method restarting the game
      */
-    public  void startTheGame(){
+    public void restartTheGame() {
+        gameStarted = false;
+        startTheGame();
+    }
+
+    /**
+     * Method configures game to a start position depending on game settings
+     */
+    public  void startTheGame() {
         if (gameStarted) {
             JOptionPane.showMessageDialog(null,"Game already started!");
             return;
         }
 
         if (learningInProcess && (player1.getLevel() == Levels.LEARNING ||  player2.getLevel() == Levels.LEARNING)) {
-
             JOptionPane.showMessageDialog(null,"Learning in process. " +
-                    "Please change game level to any another, or wait while learning will be finished.");
+                    "Please change game level to any another, or wait until learning will be finished.");
             return;
         }
 
@@ -125,93 +129,54 @@ public class Game {
 
         switch (firstPlayerUserSelection) {
             case PLAYER1 : {
-                currentPlayer = player1;
-                player1.setFigure(Figure.CROSS);
-                player2.setFigure(Figure.ZERO);
+                setFirstPlayer(player1);
                 break;
             }
             case PLAYER2 : {
-                currentPlayer = player2;
-                player1.setFigure(Figure.ZERO);
-                player2.setFigure(Figure.CROSS);
+                setFirstPlayer(player2);
                 break;
             }
             case RANDOM : {
                 if (new Random().nextBoolean()) {
-                    currentPlayer = player2;
-                    player1.setFigure(Figure.ZERO);
-                    player2.setFigure(Figure.CROSS);
+                    setFirstPlayer(player1);
                 } else {
-                    currentPlayer = player1;
-                    player1.setFigure(Figure.CROSS);
-                    player2.setFigure(Figure.ZERO);
+                    setFirstPlayer(player2);
                 }
                 break;
             }
         }
-
-        new DisplayPlayer().display();
-
-        for ( int i = 0; i < fieldSize; i++) {
-            for ( int j = 0; j < fieldSize; j++) {
-                updateField(i,j, Figure.EMPTY);
-                UserInterface.getButton(i,j).printFieldElement();
-                UserInterface.getButton(i,j).setButtonEnabled(true);
-            }
-        }
-
-        currentPlayer.makeMove();
+        UserInterface.displayPlayer.display(false);
+        updateField(true, true);
+        activePlayer.makeMove();
     }
 
     /**
-     *  method restarting the game
+     * Method that bounds players to its figures and sets active player at start of game
+     * @param firstPlayer player1 or player2
      */
-    public void restartTheGame(){
+    private void setFirstPlayer(Player firstPlayer) {
+        activePlayer = firstPlayer;
+        if (activePlayer == player1) {
+            player1.setFigure(Figure.CROSS);
+            player2.setFigure(Figure.ZERO);
+
+        } else {
+            player2.setFigure(Figure.CROSS);
+            player1.setFigure(Figure.ZERO);
+        }
+    }
+
+    /**
+     * Method stops game and freezing it, or totally resets depending on
+     * is it called by user or by program
+     */
+    public void stopGame(boolean setAllCellsEmpty) {
         gameStarted = false;
-        startTheGame();
-    }
-
-    /**
-     *  method resets field but not starting a new game
-     */
-    public void stopGame() {
-        gameStarted = false;
-        currentPlayer = null;
-        new DisplayPlayer().display();
-        for (int i = 0; i < fieldSize; i++) {
-            for ( int j = 0; j < fieldSize; j++) {
-                updateField(i,j, Figure.EMPTY);
-                UserInterface.getButton(i,j).setWaitingForGame();
-            }
+        UserInterface.displayPlayer.display(true);
+        updateField(setAllCellsEmpty, false);
+        if (!setAllCellsEmpty) {
+            System.out.println("game finished");
         }
-    }
-
-    /**
-     * Method sets all elements of field empty
-     */
-    private void setFieldEmpty() {
-        for (int i = 0; i < fieldSize; i++) {
-            for ( int j = 0; j < fieldSize; j++) {
-                updateField(i,j, Figure.EMPTY);
-            }
-        }
-    }
-
-    /**
-     *  method freezing game, calling from results checker. Used for watching the field after game finished.
-     *
-     * @see GameResult
-     */
-    public void endTheGame(){
-        gameStarted = false;
-        currentPlayer = null;
-        new DisplayPlayer().display();
-        for ( int i = 0; i < fieldSize; i++) {
-            for ( int j = 0; j < fieldSize; j++) {
-                UserInterface.getButton(i,j).setWaitingForGame();
-            }
-        }
-        System.out.println("game finished");
     }
 
     /**
@@ -225,37 +190,65 @@ public class Game {
      * @see DisplayPlayer
      */
     public void nextMove(int string, int row, Figure fieldValue) {
-        updateField(string,row,fieldValue);
+        updateCell(string,row,fieldValue);
         UserInterface.getButton(string,row).printFieldElement();
 
-        new GameResult().checkGameResult();
+        gameResult.checkGameResult();
+        changeActiveFigure();
+        changeActivePlayer();
+        UserInterface.displayPlayer.display(false);
 
+        if (gameStarted) {
+            activePlayer.makeMove();
+        }
+    }
+
+    /**
+     * Method changes active figure, calling when move is finished
+     */
+    private void changeActiveFigure() {
         if (getActiveFigure() == Figure.CROSS) {
             activeFigure = Figure.ZERO;
         } else {
             activeFigure = Figure.CROSS;
         }
+    }
 
-        if (currentPlayer == player1) {
-            currentPlayer = player2;
+    /**
+     * Method changes active player, calling when move is finished
+     */
+    private void changeActivePlayer() {
+        if (activePlayer == player1) {
+            activePlayer = player2;
         } else {
-            currentPlayer = player1;
-        }
-
-        new DisplayPlayer().display();
-
-        if (currentPlayer != null) {
-            currentPlayer.makeMove();
+            activePlayer = player1;
         }
     }
 
     /**
-     * method updates cell in field by given coordinates
+     * Method updates all field elements
+     * @param setAllCellsEmpty method sets all cells to empty state if enabled
+     * @param setButtonEnabled method sets buttons (in ui) to enabled, or disabled state
+     */
+    public void updateField(boolean setAllCellsEmpty, boolean setButtonEnabled) {
+        for (int striing = 0; striing < fieldSize; striing++) {
+            for ( int row = 0; row < fieldSize; row++) {
+                if (setAllCellsEmpty) {
+                    updateCell(striing, row, Figure.EMPTY);
+                }
+                UserInterface.getButton(striing,row).printFieldElement();
+                UserInterface.getButton(striing,row).setButtonEnabled(setButtonEnabled);
+            }
+        }
+    }
+
+    /**
+     * Method updates cell in field by given coordinates
      * @param string number of string
      * @param row number of row
-     * @param fieldValue valuethat should be written
+     * @param fieldValue value that should be written
      */
-    public void updateField(int string, int row, Figure fieldValue) {
+    public void updateCell(int string, int row, Figure fieldValue) {
         gameField[string][row] = fieldValue;
     }
 
@@ -274,7 +267,7 @@ public class Game {
         return gameField;
     }
 
-    public  void setFirstPlayerUserSelection(FirstPlayerSelect firstPlayerUserSelection) {
+    public  void setFirstPlayerUserSelection(FirstPlayerSelection firstPlayerUserSelection) {
         this.firstPlayerUserSelection = firstPlayerUserSelection;
     }
 
@@ -282,8 +275,8 @@ public class Game {
         return gameStarted;
     }
 
-    public  Player getCurrentPlayer() {
-        return currentPlayer;
+    public  Player getActivePlayer() {
+        return activePlayer;
     }
 
     public  Player getPlayer(int id) {
@@ -305,6 +298,4 @@ public class Game {
     public void setLearningInProcess(boolean learningInProcess) {
         this.learningInProcess = learningInProcess;
     }
-
-
 }

@@ -135,6 +135,6 @@ public class GameResult {
 
         JOptionPane.showMessageDialog(null,
                 winnersName + " wins!!!");
-        game.endTheGame();
+        game.stopGame(false);
     }
 }

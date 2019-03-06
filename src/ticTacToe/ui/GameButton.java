@@ -34,7 +34,6 @@ public class GameButton extends JFrame{
         button.setMinimumSize(new Dimension(dimension));
         button.setMaximumSize(new Dimension(dimension));
         button.setFont(font);
-        printFieldElement();
         button.addActionListener( actionEvent -> getUserSelection());
     }
 
