@@ -194,7 +194,7 @@ public class Game {
         UserInterface.getButton(string,row).printFieldElement();
 
         gameResult.checkGameResult();
-        changeActiveFigure();
+        activeFigure = getOppositeFigure(activeFigure);
         changeActivePlayer();
         UserInterface.displayPlayer.display(false);
 
@@ -206,12 +206,11 @@ public class Game {
     /**
      * Method changes active figure, calling when move is finished
      */
-    private void changeActiveFigure() {
-        if (getActiveFigure() == Figure.CROSS) {
-            activeFigure = Figure.ZERO;
-        } else {
-            activeFigure = Figure.CROSS;
+    public Figure getOppositeFigure(Figure activeFigure) {
+        if (activeFigure == Figure.CROSS) {
+            return Figure.ZERO;
         }
+        return Figure.CROSS;
     }
 
     /**

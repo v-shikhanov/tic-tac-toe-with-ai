@@ -10,113 +10,129 @@ import static ticTacToe.ui.UserInterface.game;
  *  Class that implements medium level for game - it finished sequence if it found
  */
 public class MediumLevel {
-    private int string;
-    private int row;
+    /**
+     * Method scanning field upside down row by row, if row contains target values and one empty cell, this cell selects
+     * else method goes to horizontal scan, then diagonal
+     * @param value which combination should be checked
+     */
+    public Cell scan(Figure value) {
+        Figure oppositeValue = game.getOppositeFigure(value);
+        int emptyString = 0;
+        int emptyRow = 0;
+        int emptyCnt;
+        for (int row = 0; row < game.getFieldSize(); row++) {
+            emptyCnt = 0;
+            for (int string = 0; string < game.getFieldSize(); string++) {
+                Figure fieldValue = game.getFieldValue(string,row);
+                if (fieldValue.equals(oppositeValue)) {
+                    emptyCnt = 0;
+                    break;
+                } else if (fieldValue.equals(EMPTY)) {
+                    emptyCnt++;
+                    if (emptyCnt < 2) {
+                        emptyRow = row;
+                        emptyString = string;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            if (emptyCnt == 1) {
+                return new Cell(emptyString, emptyRow);
+            }
+        }
+        return scanHorizontal(value);
+    }
 
     /**
-     * method scanning field upside down, left to right and diagonals to find sequence in field that could lead to win
-     * of any player
-     * @param figure which combination should be checked
+     * Method scanning field left to right string by string, if string contains target values and one empty cell,
+     * this cell selects else method goes to diagonal scan
+     * @param value which combination should be checked
      */
-    public Cell scan(Figure figure) {
-
-        Cell cell = scanDown(figure);
-        if (cell != null) {
-            return cell;
+    private Cell scanHorizontal(Figure value) {
+        Figure oppositeValue = game.getOppositeFigure(value);
+        int emptyString = 0;
+        int emptyRow = 0;
+        int emptyCnt;
+        for (int string = 0; string < game.getFieldSize(); string++) {
+            emptyCnt = 0;
+            for (int row = 0; row < game.getFieldSize(); row++) {
+                Figure fieldValue = game.getFieldValue(string,row);
+                if (fieldValue.equals(oppositeValue)) {
+                    emptyCnt = 0;
+                    break;
+                } else if (fieldValue.equals(EMPTY)) {
+                    emptyCnt++;
+                    if (emptyCnt < 2) { //too much empty cells
+                        emptyRow = row;
+                        emptyString = string;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            if (emptyCnt == 1) {
+                return new Cell(emptyString, emptyRow);
+            }
         }
-        cell = scanRight(figure);
-        if (cell != null) {
-            return cell;
-        }
-        cell = scanDiagonal(figure);
-        if (cell != null) {
-            return cell;
-        }
-        return null;
+        return scanFirstDiagonal(value);
     }
 
-    private Cell scanDown(Figure value) {
-        for( int r = 0; r < game.getFieldSize(); r++) {
-            if (game.getFieldValue(0, r) == value &&
-                    game.getFieldValue(1, r) == value &&
-                    game.getFieldValue(2,r) == EMPTY) {
-                string = 2;
-                row = r;
-                return new Cell(string,row);
+    /**
+     * Method scanning first diagonal, if it contains target values and one empty cell,
+     * this cell selects else method goes to scan second diagonal
+     * @param value which combination should be checked
+     */
+    private Cell scanFirstDiagonal(Figure value) {
+        Figure oppositeValue = game.getOppositeFigure(value);
+        int emptyString = 0;
+        int emptyRow = 0;
+        int emptyCnt = 0;
+        int row = 0;
+        for (int string = 0; string < game.getFieldSize(); string++) {
+            Figure fieldValue = game.getFieldValue(string,row);
+            if (fieldValue.equals(oppositeValue)) {
+                emptyCnt = 0;
+                break;
+            } else if (fieldValue.equals(EMPTY)) {
+                emptyCnt++;
+                emptyRow = row;
+                emptyString = string;
             }
-
-            if (game.getFieldValue(1, r) == value &&
-                    game.getFieldValue(2, r) == value &&
-                    game.getFieldValue(0,r) == EMPTY) {
-                string = 0;
-                row = r;
-                return new Cell(string,row);
-            }
+            row++;
         }
-        return null;
+        if (emptyCnt == 1) {
+            return new Cell(emptyString, emptyRow);
+        }
+        return scanSecondDiagonal(value);
     }
 
+    /**
+     * Method scanning second diagonal, if it contains target values and one empty cell,
+     * this cell selects else method returns null.
+     * @param value which combination should be checked
+     */
+    private Cell scanSecondDiagonal(Figure value) {
+        Figure oppositeValue = game.getOppositeFigure(value);
+        int emptyString = 0;
+        int emptyRow = 0;
+        int emptyCnt = 0;
+        int row = 0;
+        for (int string = game.getFieldSize() - 1; string >= 0; string--) {
+            Figure fieldValue = game.getFieldValue(string,row);
+            if (fieldValue.equals(oppositeValue)) {
+                emptyCnt = 0;
+                break;
+            } else if (fieldValue.equals(EMPTY)) {
+                emptyCnt++;
+                emptyRow = row;
+                emptyString = string;
 
-
-    private Cell scanRight(Figure value) {
-        for( int s = 0; s < game.getFieldSize(); s++) {
-            if ((game.getFieldValue(s, 0) == value) &&
-                    (game.getFieldValue(s, 1) == value) &&
-                    (game.getFieldValue(s, 2) == EMPTY)) {
-                string = s;
-                row = 2;
-                return new Cell(string,row);
             }
-
-            if (game.getFieldValue(s, 1) == value &&
-                    game.getFieldValue(s, 2) == value &&
-                    game.getFieldValue(s,0) == EMPTY) {
-                string = s;
-                row = 0;
-                return new Cell(string,row);
-            }
+            row++;
         }
-        return null;
-    }
-
-    private  Cell scanDiagonal(Figure value) {
-        /*
-            Check that first diagonal equal and not null
-         */
-        if (game.getFieldValue(0, 0) == value &&
-                game.getFieldValue(1, 1) == value &&
-                game.getFieldValue(2,2) == EMPTY) {
-            string = 2;
-            row = 2;
-            return new Cell(string,row);
-        }
-
-
-        if (game.getFieldValue(1, 1) == value &&
-                game.getFieldValue(2, 2) == value &&
-                game.getFieldValue(0,0) == EMPTY) {
-            string = 0;
-            row = 0;
-            return new Cell(string,row);
-        }
-        /*
-            Check that second diagonal equal and not null
-         */
-        if (game.getFieldValue(0, 2) == value &&
-                game.getFieldValue(1, 1) == value &&
-                game.getFieldValue(2,0) == EMPTY) {
-            string = 2;
-            row = 0;
-            return new Cell(string,row);
-        }
-
-
-        if (game.getFieldValue(2, 0) == value &&
-                game.getFieldValue(1, 1) == value &&
-                game.getFieldValue(0,2) == EMPTY) {
-            string = 0;
-            row = 2;
-            return new Cell(string,row);
+        if (emptyCnt == 1) {
+            return new Cell(emptyString, emptyRow);
         }
         return null;
     }

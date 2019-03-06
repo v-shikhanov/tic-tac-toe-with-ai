@@ -5,9 +5,9 @@ import ticTacToe.game.Game;
 import ticTacToe.game.GameResult;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
-import static ticTacToe.game.Game.Figure.*;
 import static ticTacToe.ui.UserInterface.game;
 
 /**
@@ -39,24 +39,12 @@ public class ComputerRival {
     public Cell medium() {
         MediumLevel mediumLevel = new MediumLevel();
         Game.Figure valueOfComputer = game.getActiveFigure();
-        Game.Figure valueOfOpponent;
-        Cell cell = mediumLevel.scan(valueOfComputer);
-        if (cell != null) {
-            return cell;
+        Optional<Cell> cell = Optional.ofNullable(mediumLevel.scan(valueOfComputer));
+        if (cell.isPresent()) {
+            return cell.get();
         }
-
-        if (valueOfComputer == CROSS) {
-            valueOfOpponent = ZERO;
-        } else {
-            valueOfOpponent = CROSS;
-        }
-
-        cell = mediumLevel.scan(valueOfOpponent);
-        if (cell != null) {
-            return cell;
-        }
-
-        return easy(game.getGameField());
+        cell = Optional.ofNullable(mediumLevel.scan(game.getOppositeFigure(valueOfComputer)));
+        return cell.orElseGet(() -> easy(game.getGameField()));
     }
 
     /**
@@ -68,13 +56,10 @@ public class ComputerRival {
      * @return move coordinate Cell
      */
     public Cell hard(Game.Figure[][] field, Game.Figure activeFigure, Game.Figure playerFigure) {
-
         if (new GameResult().emptyCells(game.getGameField()).size() > miniMaxDepthLimit) {
-            return easy(game.getGameField());
+            return medium();
         }
-
-        Cell cell = new MiniMax().minimax(field, activeFigure, playerFigure);
-        return cell;
+        return new MiniMax().minimax(field, activeFigure, playerFigure);
     }
 
     /**
