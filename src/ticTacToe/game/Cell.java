@@ -3,7 +3,7 @@ package ticTacToe.game;
 import ticTacToe.ai.MiniMax;
 
 /**
- * Class that contain coordinate and rate of cell of field
+ * Class contains coordinate and rate of field cell
  *
  * @see MiniMax
  * @see ticTacToe.ai.SelfLearning

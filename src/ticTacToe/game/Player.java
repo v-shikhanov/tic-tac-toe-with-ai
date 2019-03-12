@@ -2,7 +2,6 @@ package ticTacToe.game;
 
 import ticTacToe.ai.ComputerRival;
 import ticTacToe.ui.UserInterface;
-
 import static ticTacToe.ui.UserInterface.game;
 
 /**
@@ -43,7 +42,6 @@ public class Player {
             }
             UserInterface.buttonsUpdate(cell.string, cell.row);
         }
-
     }
 
     /**
@@ -53,7 +51,7 @@ public class Player {
         this.figure = figure;
     }
 
-    public void setisComputer(boolean computer) {
+    public void setIsComputer(boolean computer) {
         this.computer = computer;
     }
 
@@ -68,5 +66,4 @@ public class Player {
     public Game.Figure getFigure() {
         return figure;
     }
-
 }

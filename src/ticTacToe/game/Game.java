@@ -6,7 +6,7 @@ import ticTacToe.ui.UserInterface;
 import javax.swing.*;
 import java.util.Random;
 /**
- *  This class saves all game settings, and current parameters
+ * This class saves all game settings, and current parameters
  */
 public class Game {
 
@@ -252,7 +252,7 @@ public class Game {
     }
 
     /**
-     * getters and setters for game parameters
+     * Getters and setters for game parameters
      */
     public Figure getActiveFigure() {
         return activeFigure;
@@ -266,27 +266,26 @@ public class Game {
         return gameField;
     }
 
-    public  void setFirstPlayerUserSelection(FirstPlayerSelection firstPlayerUserSelection) {
+    public void setFirstPlayerUserSelection(FirstPlayerSelection firstPlayerUserSelection) {
         this.firstPlayerUserSelection = firstPlayerUserSelection;
     }
 
-    public  boolean isGameStarted() {
+    public boolean isGameStarted() {
         return gameStarted;
     }
 
-    public  Player getActivePlayer() {
+    public Player getActivePlayer() {
         return activePlayer;
     }
 
-    public  Player getPlayer(int id) {
+    public Player getPlayer(int id) {
         if (id == 1) {
             return player1;
-        } else {
-            return player2;
         }
+        return player2;
     }
 
-    public  int getFieldSize() {
+    public int getFieldSize() {
         return fieldSize;
     }
 

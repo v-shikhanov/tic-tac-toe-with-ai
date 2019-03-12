@@ -179,6 +179,7 @@ public class UserInterface extends JFrame {
          dispose();
          new UserInterface(newSize);
      }
+
     /**
      * This method updates a text inside a button after computer makes a move, and disable it for user
      *
@@ -189,6 +190,14 @@ public class UserInterface extends JFrame {
         button[string][row].printFieldElement();
         button[string][row].setButtonEnabled(false);
         game.nextMove(string, row, game.getActiveFigure());
+    }
+
+    /**
+     * Message showing message with given text
+     * @param message text to show
+     */
+    public static void showMessage(String message) {
+        JOptionPane.showMessageDialog(null, message);
     }
 
     /**

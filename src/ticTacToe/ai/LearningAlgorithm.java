@@ -1,40 +1,36 @@
 package ticTacToe.ai;
 
 import ticTacToe.game.*;
-
 import java.io.*;
 import java.util.*;
-
 import static ticTacToe.game.Game.Figure.*;
 import static ticTacToe.ui.UserInterface.game;
-
 /**
  *  Class for storing and load information about fields for better use. And making move
  *  using computer experience.
  */
 public class LearningAlgorithm extends Thread implements Serializable {
     private static final long serialVersionUID = 123L;
-
     /**
-     *  field size to work with
+     * Field size to work with
      */
     private int fieldSize;
 
     /**
-     *  is a ready status that all fields are loaded from file (because on big field sizes it could takes a really big
-     *  time to load all information)
+     * Is a ready status that all fields are loaded from file (because on big field sizes it could takes a really big
+     * time to load all information)
      */
     private boolean loadedFromFile;
 
     /**
-     *  it is a pearl of this class - collection of fields with its rates. Key is a field converted to long value like
-     *  a threefold.
+     * It is a pearl of this class - collection of fields with its rates. Key is a field converted to long value like
+     * a threefold.
      */
     Map<Long, Rate> fieldsMap;
 
     /**
-     *  Constructor sets field values to a default
-     *  @param filedSize is size of field with class should work with
+     * Constructor sets field values to a default
+     * @param filedSize is size of field with class should work with
      */
     public LearningAlgorithm(int filedSize) {
         this.loadedFromFile = false;
@@ -78,20 +74,18 @@ public class LearningAlgorithm extends Thread implements Serializable {
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             fieldsMap = (Map<Long, Rate>) objectInputStream.readObject();
             System.out.println("\nFields  are load from file");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         loadedFromFile = true;
     }
 
     /**
-     * Method checks fields map and returns coordinate of better move, it exists
-     * @param field
+     * Method checks fields map and returns coordinate of better move
+     * @param field game field
      * @return coordinate of move
      */
-    public Cell makeMove(Game.Figure[][] field){
+    public Cell makeMove(Game.Figure[][] field) {
         List<Cell> emptyCells = new GameResult().emptyCells(field);
         int currentRate = Integer.MIN_VALUE;
         int selectedMoveIndex = 0;
@@ -196,7 +190,7 @@ public class LearningAlgorithm extends Thread implements Serializable {
     }
 
     /**
-     * getter for status of fields map
+     * Getter for status of fields map
      * @return true if fields are loaded from file
      */
     public boolean isLoadedFromFile() {
@@ -207,7 +201,7 @@ public class LearningAlgorithm extends Thread implements Serializable {
      *  Class contains rates which are used in learning process and in move making
      *  It'string bound to a key value in fields map and characterised move for X player and for O player
      */
-    private class Rate implements Serializable{
+    private class Rate implements Serializable {
         private int rateX;
         private int rate0;
 

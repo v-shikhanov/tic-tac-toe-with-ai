@@ -1,7 +1,6 @@
 package ticTacToe.ai;
 
 import ticTacToe.game.Cell;
-
 import static ticTacToe.game.Game.*;
 import static ticTacToe.game.Game.Figure.EMPTY;
 import static ticTacToe.ui.UserInterface.game;
@@ -11,8 +10,8 @@ import static ticTacToe.ui.UserInterface.game;
  */
 public class MediumLevel {
     /**
-     * Method scanning field upside down row by row, if row contains target values and one empty cell, this cell selects
-     * else method goes to horizontal scan, then diagonal
+     * Method scanning field upside down row by row, if row contains sequence of target values and one empty cell,
+     * this cell selects else method goes to horizontal scan, then diagonal
      * @param value which combination should be checked
      */
     public Cell scan(Figure value) {
@@ -29,7 +28,7 @@ public class MediumLevel {
                     break;
                 } else if (fieldValue.equals(EMPTY)) {
                     emptyCnt++;
-                    if (emptyCnt < 2) {
+                    if (emptyCnt < 2) { //too much empty cells
                         emptyRow = row;
                         emptyString = string;
                     } else {

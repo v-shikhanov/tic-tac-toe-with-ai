@@ -81,7 +81,7 @@ import static ticTacToe.ui.UserInterface.game;
         JMenuItem learning = new JRadioButtonMenuItem("Self-learning");
 
         computerRival.addActionListener(actionEvent -> {
-            game.getPlayer(playerID).setisComputer(computerRival.getState());
+            game.getPlayer(playerID).setIsComputer(computerRival.getState());
             easy.setEnabled(computerRival.getState());
             medium.setEnabled(computerRival.getState());
             hard.setEnabled(computerRival.getState());
@@ -93,7 +93,7 @@ import static ticTacToe.ui.UserInterface.game;
         medium.setEnabled(isComputer);
         hard.setEnabled(isComputer);
         learning.setEnabled(isComputer);
-        game.getPlayer(playerID).setisComputer(isComputer);
+        game.getPlayer(playerID).setIsComputer(isComputer);
 
 
         game. getPlayer(playerID).setLevel(Levels.MEDIUM);

@@ -1,20 +1,17 @@
 package ticTacToe.ai;
 
 import ticTacToe.game.*;
-
-
-import javax.swing.*;
+import ticTacToe.ui.UserInterface;
 import java.util.ArrayList;
-
 import static ticTacToe.game.Game.Figure.*;
 import static ticTacToe.ui.UserInterface.game;
 
 /**
- *  Class that implements learning process. It just simulate game with two random going computers and writes results
+ * Class that implements learning process. It just simulate game with two random going computers and writes results
  */
 public class SelfLearning extends Thread{
     /**
-     *  list of fields, converted to long values which were made by computers
+     * List of fields, converted to long values which were made by computers
      */
     private ArrayList<Long> log = new ArrayList<>();
 
@@ -24,20 +21,20 @@ public class SelfLearning extends Thread{
     private LearningAlgorithm learningAlgorithm = new LearningAlgorithm(game.getFieldSize());
 
     /**
-     *  number of games which should be played in this learning process
+     * Number of games which should be played in this learning process
      */
     private int iterations;
 
     /**
-     *  Constructor sets field values to a default
-     *  @param iterations number of games which should be played in this learning process
+     * Constructor sets field values to a default
+     * @param iterations number of games which should be played in this learning process
      */
     public SelfLearning(int iterations) {
         this.iterations = iterations;
     }
 
     /**
-     *  it'string a game process which starts in new thread for non-blocking application work
+     * Training game process which starts in new thread for non-blocking application work
      */
     @Override
     public void run() {
@@ -65,40 +62,46 @@ public class SelfLearning extends Thread{
         message =  "Learning with " + i + " iterations completed. " +
                 " Fields collection size now is " + learningAlgorithm.fieldsMap.keySet().size();
         System.out.println();
-        JOptionPane.showMessageDialog(null, message);
+        UserInterface.showMessage(message);
         game.setLearningInProcess(false);
     }
 
+    /**
+     * Method makes a simulation of game with random moves
+     */
     private void selfLearningGame() {
-        int size = game.getFieldSize();
-        Game.Figure[][] field = new Game.Figure[size][size];
+        Game.Figure[][] field = createEmptyCellsField();
         Game.Figure activeFigure = CROSS;
-
-        for ( int i = 0; i < field.length; i++) {
-            for ( int j = 0; j < field.length; j++) {
-                field[i][j] = EMPTY;
-            }
-        }
 
         while (true) {
             field = makeMove (field, activeFigure).clone();
             if (isGameFinished(field)) {
                 return;
             }
-
-            if (activeFigure == CROSS) {
-                activeFigure = ZERO;
-            } else {
-                activeFigure = CROSS;
-            }
+            activeFigure = game.getOppositeFigure(activeFigure);
         }
     }
 
     /**
-     *  Method makes a random move in given field with active figure and logging it
-     * @param field
-     * @param activeFigure
-     * @return
+     * Method creates field filled by empty cells
+     * @return field with empty cells
+     */
+    private Game.Figure[][] createEmptyCellsField() {
+        int size = game.getFieldSize();
+        Game.Figure[][] field = new Game.Figure[size][size];
+        for ( int i = 0; i < field.length; i++) {
+            for ( int j = 0; j < field.length; j++) {
+                field[i][j] = EMPTY;
+            }
+        }
+        return field;
+    }
+
+    /**
+     * Method makes a random move in given field with active figure and logging it
+     * @param field where move should be found
+     * @param activeFigure is a figure which moves now
+     * @return field modified with new move
      */
     private Game.Figure[][] makeMove(Game.Figure[][] field, Game.Figure activeFigure) {
         Cell cell = new ComputerRival().easy(field);
@@ -109,18 +112,18 @@ public class SelfLearning extends Thread{
 
     /**
      * Method checks for given field is game finished
-     * @param field
+     * @param field which must be checked
      * @return true if finished
      */
     private boolean isGameFinished(Game.Figure[][] field) {
         GameResult gameResult = new GameResult();
 
-        if (gameResult.win(field, CROSS)) {
+        if (gameResult.checkWin(field, CROSS)) {
             learningAlgorithm.updateFieldsMap(CROSS, log);
             return true;
         }
 
-        if (gameResult.win(field, ZERO)) {
+        if (gameResult.checkWin(field, ZERO)) {
             learningAlgorithm.updateFieldsMap(ZERO, log);
             return true;
         }

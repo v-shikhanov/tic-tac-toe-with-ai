@@ -3,18 +3,15 @@ package ticTacToe.ai;
 import ticTacToe.game.Cell;
 import ticTacToe.game.Game;
 import ticTacToe.game.GameResult;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-
 import static ticTacToe.ui.UserInterface.game;
 
 /**
  * Class for making moves against human or another computer
 */
 public class ComputerRival {
-
     /**
      * Qnt of empty cells when minimax algorithm working good.(If number of empty cells is greater than limit
      * waiting of results is too long
@@ -24,7 +21,7 @@ public class ComputerRival {
     /**
     * Easy level method - randomly selects cell in field
     * @param field where should be found a coordinate of move
-    * @return move coordinate Cell
+    * @return coordinate of cell to make move
     */
     public Cell easy(Game.Figure[][] field) {
         List<Cell> emptyCells = new GameResult().emptyCells(field);
@@ -32,8 +29,11 @@ public class ComputerRival {
     }
 
     /**
-     * Method calls scanning of sequence, if it not found making a random move
-     * @return move coordinate Cell
+     * Method calls scanning of sequence of equal non empty cells with one empty one - horizontal,vertical, diagonal
+     * for example for string (OO.) where . is empty, method will return coordinate of this empty cell. So method able to
+     * finish game if winning move exists or prevent winning of opponent if winning move exists for him.
+     * If this cell not found, method goes to easy level(random move).
+     * @return coordinate of cell to make move
      * @see ComputerRival
      */
     public Cell medium() {
@@ -53,7 +53,7 @@ public class ComputerRival {
      * @param activeFigure figure which should moves now
      * @param playerFigure is a figure of player which considering
      *                     mininmax algorithm
-     * @return move coordinate Cell
+     * @return coordinate of cell to make move
      */
     public Cell hard(Game.Figure[][] field, Game.Figure activeFigure, Game.Figure playerFigure) {
         if (new GameResult().emptyCells(game.getGameField()).size() > miniMaxDepthLimit) {
@@ -70,7 +70,7 @@ public class ComputerRival {
         if (game.isLearningInProcess()) {
             return hard(game.getGameField(), game.getActiveFigure(), game.getActiveFigure());
         } else {
-            if ( game.learningAlgorithm.isLoadedFromFile()) {
+            if (game.learningAlgorithm.isLoadedFromFile()) {
                 return game.learningAlgorithm.makeMove(game.getGameField());
             } else {
                 return hard(game.getGameField(), game.getActiveFigure(), game.getActiveFigure());

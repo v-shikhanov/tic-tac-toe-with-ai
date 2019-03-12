@@ -1,12 +1,8 @@
 package ticTacToe.game;
 
 import ticTacToe.ui.UserInterface;
-
-import javax.swing.*;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static ticTacToe.game.Game.*;
 import static ticTacToe.game.Game.Figure.*;
 import static ticTacToe.ui.UserInterface.game;
@@ -17,13 +13,13 @@ import static ticTacToe.ui.UserInterface.game;
 public class GameResult {
 
     /**
-     * Method checks game win and tie for players 1 and 2
+     * Method checks game checkWin and tie for players 1 and 2
      */
-    public  void checkGameResult() {
-        if (win(game.getGameField(), CROSS)) {
+    public void checkGameResult() {
+        if (checkWin(game.getGameField(), CROSS)) {
             printGameResult(CROSS);
             return;
-        } else if (win(game.getGameField(), ZERO)) {
+        } else if (checkWin(game.getGameField(), ZERO)) {
             printGameResult(ZERO);
             return;
         }
@@ -39,56 +35,104 @@ public class GameResult {
      * @param figure figure for which game result should be checked
      * @return true if winning combination for given figure exists in field
      */
-    public boolean win(Figure[][] field, Figure figure) {
-        for (int s = 0; s < game.getFieldSize(); s++) {
-            for(int r = 0; r < game.getFieldSize(); r++) {
-                if (field[s][r] != figure) {
+    public boolean checkWin(Figure[][] field, Figure figure) {
+        if (checkWinVertical(field, figure)) {
+            return true;
+        }
+
+        if (checkWinHorizontal(field, figure)) {
+            return true;
+        }
+
+        if (checkWinFirstDiagonal(field, figure)) {
+            return true;
+        }
+
+        return checkWinSecondDiagonal(field, figure);
+    }
+
+    /**
+     * Method checks for winning combination fields upside down.
+     * @param field game field that should be checked
+     * @param figure figure for which game result should be checked
+     * @return true if winning combination in given field for given figure exists
+     */
+    private boolean checkWinVertical(Figure[][] field, Figure figure) {
+        for (int string = 0; string < game.getFieldSize(); string++) {
+            for(int row = 0; row < game.getFieldSize(); row++) {
+                if (field[string][row] != figure) {
                     break;
                 }
-                if (r == game.getFieldSize() - 1) {
+                if (row == game.getFieldSize() - 1) {
                     return true;
                 }
             }
-        }
-
-        for (int r = 0; r < game.getFieldSize(); r++) {
-            for(int s = 0; s < game.getFieldSize(); s++) {
-                if (field[s][r] != figure) {
-                    break;
-                }
-                if (s == game.getFieldSize() - 1) {
-                    return true;
-                }
-            }
-        }
-
-        for (int s = 0; s < game.getFieldSize(); s++) {
-            if (field[s][s] != figure) {
-                break;
-            }
-            if (s == game.getFieldSize() - 1) {
-                return true;
-            }
-        }
-
-        int r = 0;
-        for (int s = game.getFieldSize()-1; s >= 0; s--) {
-
-            if (field[s][r] != figure) {
-                break;
-            }
-            if (r == game.getFieldSize() - 1) {
-                return true;
-            }
-            r++;
         }
         return false;
     }
 
     /**
-     * Method creates list of cells free to move
-     * @param field field to check
-     * @return list of cells
+     * Method checks for winning combination fields left to right.
+     * @param field game field that should be checked
+     * @param figure figure for which game result should be checked
+     * @return true if winning combination in given field for given figure exists
+     */
+    private boolean checkWinHorizontal(Figure[][] field, Figure figure) {
+        for (int row = 0; row < game.getFieldSize(); row++) {
+            for(int string = 0; string < game.getFieldSize(); string++) {
+                if (field[string][row] != figure) {
+                    break;
+                }
+                if (string == game.getFieldSize() - 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Method checks for winning combination first diagonal
+     * @param field game field that should be checked
+     * @param figure figure for which game result should be checked
+     * @return true if winning combination in given field for given figure exists
+     */
+    private boolean checkWinFirstDiagonal(Figure[][] field, Figure figure) {
+        for (int string = 0; string < game.getFieldSize(); string++) {
+            if (field[string][string] != figure) {
+                break;
+            }
+            if (string == game.getFieldSize() - 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Method checks for winning combination second diagonal
+     * @param field game field that should be checked
+     * @param figure figure for which game result should be checked
+     * @return true if winning combination in given field for given figure exists
+     */
+    private boolean checkWinSecondDiagonal(Figure[][] field, Figure figure) {
+        int row = 0;
+        for (int string = game.getFieldSize()-1; string >= 0; string--) {
+            if (field[string][row] != figure) {
+                break;
+            }
+            if (row == game.getFieldSize() - 1) {
+                return true;
+            }
+            row++;
+        }
+        return false;
+    }
+
+    /**
+     * Method creates list of cells able to move
+     * @param field should be checked
+     * @return list of empty cells
      */
     public List<Cell> emptyCells(Figure[][] field) {
         List<Cell> emptyCells = new ArrayList<>();
@@ -103,8 +147,8 @@ public class GameResult {
     }
 
     /**
-     * Open new information window according game result
-     * @param result figure that win the game
+     * Opens new information window according game result
+     * @param result figure that checkWin the game
      */
     private void printGameResult(Figure result){
         String winnersName;
@@ -133,8 +177,7 @@ public class GameResult {
             default : winnersName = "No one"; break;
         }
 
-        JOptionPane.showMessageDialog(null,
-                winnersName + " wins!!!");
+        UserInterface.showMessage(winnersName + " wins!!!");
         game.stopGame(false);
     }
 }
