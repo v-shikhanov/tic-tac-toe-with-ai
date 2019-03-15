@@ -4,12 +4,11 @@ import ticTacToe.game.Game;
 
 import javax.swing.*;
 import java.awt.*;
-
 import static ticTacToe.game.Game.*;
 import static ticTacToe.ui.UserInterface.game;
 
 /**
- *  Class for Game Button ui element, contains button, and it coordinate according to field matrix
+ * Class for Game Button ui element, contains button, and it coordinate according to field matrix
  */
 public class GameButton extends JFrame{
 
@@ -28,19 +27,17 @@ public class GameButton extends JFrame{
             case 6 : fontSize = 45; break;
             default : fontSize = 15; break;
         }
-
         Font font = new Font(null,Font.BOLD,fontSize);
         Dimension dimension = new Dimension(size,size);
         button.setMinimumSize(new Dimension(dimension));
-        button.setMaximumSize(new Dimension(dimension));
+      //  button.setMaximumSize(new Dimension(dimension));
         button.setFont(font);
         button.addActionListener( actionEvent -> getUserSelection());
     }
 
     /**
-     *  method that updates button text according to field matrix element
-     *  that it was bound by string and row parameter
-     *
+     * Method that updates button text according to field matrix element
+     * that it was bound by string and row parameter     *
      * @see Game
      */
     public void printFieldElement() {
@@ -63,7 +60,7 @@ public class GameButton extends JFrame{
     }
 
     /**
-     *  method that process user selection to button
+     * Method that process user selection to button
      */
     private void getUserSelection () {
         if (game.isGameStarted()) {
@@ -79,24 +76,22 @@ public class GameButton extends JFrame{
     public void setButtonEnabled(boolean state) {
         button.setEnabled(state);
     }
-    /**
-     * Method disables button before game starts and updates text in it
-     *
-     */
-    public void setWaitingForGame () {
-        button.setEnabled(false);
-        printFieldElement();
-    }
 
     /**
-        button getter
+     * Button getter
      */
     public JButton getButton() {
         return button;
     }
 
+    /**
+     * Method founds size of button depending on field size (for field good look)
+     * @param qnt quantity of buttons in one string
+     * @return
+     */
     public static int foundSize(int qnt) {
-        int width = 445;
-        return ((width - 5 * (qnt - 1)) / qnt) -1;
+       // int width = 445;
+        //       // return ((width - 5 * (qnt - 1)) / qnt) -1;
+       return ((UserInterface.getWindowWidth() - 5 * (qnt - 1) - 35) / qnt) - 1;
     }
 }

@@ -23,12 +23,13 @@ import java.awt.*;
 
         GroupLayout groupLayout = new GroupLayout(head);
         head.setLayout(groupLayout);
+       // groupLayout.setAutoCreateGaps(true);
 
         groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()
                 .addComponent(player1Label.getTextField())
-                .addGap(5)
+                .addGap(7)
                 .addComponent(whoMovesLabel.getTextField())
-                .addGap(5)
+                .addGap(7)
                 .addComponent(player2Label.getTextField())
 
         );
@@ -39,7 +40,7 @@ import java.awt.*;
                 .addComponent(player2Label.getTextField())
         );
 
-        groupLayout.linkSize(player1Label.getTextField(), player2Label.getTextField(),whoMovesLabel.getTextField());
+       // groupLayout.linkSize(player1Label.getTextField(), player2Label.getTextField(),whoMovesLabel.getTextField());
 
         return head;
     }

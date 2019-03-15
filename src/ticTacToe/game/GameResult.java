@@ -155,17 +155,17 @@ public class GameResult {
         switch (result) {
             case ZERO : {
                 if (game.getPlayer(1).getFigure() == ZERO) {
-                    winnersName = UserInterface.getPlayer1().getText();
+                    winnersName = UserInterface.getPlayer1Name().getText();
                 } else {
-                    winnersName = UserInterface.getPlayer2().getText();
+                    winnersName = UserInterface.getPlayer2Name().getText();
                 }
                 break;
             }
             case CROSS : {
                 if (game.getPlayer(1).getFigure() == CROSS) {
-                    winnersName = UserInterface.getPlayer1().getText();
+                    winnersName = UserInterface.getPlayer1Name().getText();
                 } else {
-                    winnersName = UserInterface.getPlayer2().getText();
+                    winnersName = UserInterface.getPlayer2Name().getText();
                 }
                 break;
             }

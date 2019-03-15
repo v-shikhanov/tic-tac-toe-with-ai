@@ -16,7 +16,7 @@ public class ComputerRival {
      * Qnt of empty cells when minimax algorithm working good.(If number of empty cells is greater than limit
      * waiting of results is too long
      */
-    private static final int miniMaxDepthLimit = 8;
+    private static final int MINI_MAX_DEPTH_LIMIT = 8;
 
     /**
     * Easy level method - randomly selects cell in field
@@ -56,7 +56,7 @@ public class ComputerRival {
      * @return coordinate of cell to make move
      */
     public Cell hard(Game.Figure[][] field, Game.Figure activeFigure, Game.Figure playerFigure) {
-        if (new GameResult().emptyCells(game.getGameField()).size() > miniMaxDepthLimit) {
+        if (new GameResult().emptyCells(game.getGameField()).size() > MINI_MAX_DEPTH_LIMIT) {
             return medium();
         }
         return new MiniMax().minimax(field, activeFigure, playerFigure);

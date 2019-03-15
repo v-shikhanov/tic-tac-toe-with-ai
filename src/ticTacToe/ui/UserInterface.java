@@ -28,14 +28,15 @@ public class UserInterface extends JFrame {
     /**
      * Text fields for gamer names and turn indication
      */
-    private static GameTextField player1 =
-            new GameTextField("Player 1", true, true,null);
+    private static GameTextField player1Name;
 
-    private static GameTextField player2 =
-            new GameTextField("Player 2", true, true,null);
+    private static GameTextField player2Name;
 
-    private static GameTextField whoMoves =
-            new GameTextField("Who Moves", true, true,null);
+    private static GameTextField whoMoves;
+
+    private static final int WINDOW_WIDTH = 480;
+
+    private static final int WINDOW_HEIGHT = 610;
 
     /**
      * Combo box for field size selection
@@ -48,15 +49,19 @@ public class UserInterface extends JFrame {
      * @param fieldSize size(length of side) of field 3 for 3x3, 4 for 4x4 etc
      */
     public UserInterface(int fieldSize) {
-        Dimension dimension = new Dimension(480,610);
+        Dimension dimension = new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT);
 
         this.fieldSize = fieldSize;
         game =  new Game(fieldSize);
         button = new GameButton[fieldSize][fieldSize];
+        player1Name = new GameTextField("Player 1", true, true,null);
+        player2Name = new GameTextField("Player 2", true, true,null);
+        whoMoves = new GameTextField(null, true, true,null);
         createGameFieldUI();
         game.updateField(true, false);
-        setSize(dimension);
-        setResizable(false);
+        setSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        //setResizable(false);
+
         setMinimumSize(dimension);
         setTitle("Awesome tic-tac");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -73,70 +78,17 @@ public class UserInterface extends JFrame {
         JPanel topBar = createTopBar();
         JPanel headLabels = new HeadLabels().createHeadLabels();
         JPanel head = new Head().createHead();
-        JPanel[] line = new JPanel[fieldSize];
+        JPanel[] buttonsLine = new JPanel[fieldSize];
         int btnSize = GameButton.foundSize(fieldSize);
 
-        for ( int i = 0; i < fieldSize; i++) {
-            for ( int j = 0; j < fieldSize; j++) {
-                button[i][j] = new GameButton(i,j, btnSize);
+        for ( int string = 0; string < fieldSize; string++) {
+            for ( int row = 0; row < fieldSize; row++) {
+                button[string][row] = new GameButton(string, row, btnSize);
             }
-            line[i] = formLine(button[i]);
+            buttonsLine[string] = formLine(button[string]);
         }
 
-        createLayout(line, topBar, headLabels, head);
-    }
-
-    /**
-     * Methods form the string of buttons matrix
-     * @return line of buttons
-     */
-    private JPanel formLine(GameButton b[]) {
-        JPanel buttonsLine = new JPanel();
-        GroupLayout groupLayout = new GroupLayout(buttonsLine);
-
-        buttonsLine.setLayout(groupLayout);
-        GroupLayout.ParallelGroup parallelGroup = groupLayout.createParallelGroup();
-        GroupLayout.SequentialGroup sequentialGroup = groupLayout.createSequentialGroup();
-        groupLayout.setAutoCreateGaps(true);
-
-        for (int i = 0; i < fieldSize; i++) {
-            GameButton aB = b[i];
-            sequentialGroup.addComponent(aB.getButton());
-            parallelGroup.addComponent(aB.getButton());
-        }
-        groupLayout.setVerticalGroup(parallelGroup);
-        groupLayout.setHorizontalGroup(sequentialGroup);
-        return buttonsLine;
-    }
-
-    /**
-     * creates layout compiling table of stings
-     */
-    private void createLayout(JComponent[] lines, JComponent... component) {
-        Container pane = getContentPane();
-        GroupLayout groupLayout = new GroupLayout(pane);
-        pane.setLayout(groupLayout);
-        GroupLayout.ParallelGroup parallelGroup = groupLayout.createParallelGroup();
-        GroupLayout.SequentialGroup sequentialGroup = groupLayout.createSequentialGroup();
-        groupLayout.setAutoCreateContainerGaps(true);
-        groupLayout.setAutoCreateGaps(true);
-
-
-        for (JComponent aComponent : component) {
-            parallelGroup.addComponent(aComponent);
-            sequentialGroup.addComponent(aComponent);
-        }
-
-        for (JComponent line : lines) {
-            parallelGroup.addComponent(line);
-            sequentialGroup.addComponent(line);
-        }
-
-        groupLayout.setHorizontalGroup(parallelGroup);
-        groupLayout.setVerticalGroup(sequentialGroup);
-
-        groupLayout.linkSize(component);
-
+        createLayout(topBar, headLabels, head, buttonsLine);
     }
 
     /**
@@ -144,21 +96,20 @@ public class UserInterface extends JFrame {
      *
      * @return top bar
      */
-    public JPanel createTopBar() {
+    private JPanel createTopBar() {
         JPanel topBar = new JPanel();
         JMenuBar menu = new Menu().menuCreator();
         String[] items = {"Classic 3x3","Big 4x4","Extra big 5x5","Crazy 6x6"};
 
         fieldSizeSetup = new JComboBox<>(items);
         fieldSizeSetup.setSelectedIndex(fieldSize - 3);
-        fieldSizeSetup.addActionListener( a -> changeFieldSize());
+        fieldSizeSetup.addActionListener(a -> changeFieldSize());
 
         GroupLayout groupLayout = new GroupLayout(topBar);
         topBar.setLayout(groupLayout);
-
+        groupLayout.setAutoCreateGaps(true);
         groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()
                 .addComponent(menu)
-                .addGap(40)
                 .addComponent(fieldSizeSetup)
 
         );
@@ -169,6 +120,76 @@ public class UserInterface extends JFrame {
         );
 
         return topBar;
+    }
+
+    /**
+     * Methods form the string of buttons matrix
+     * @return line of buttons
+     */
+    private JPanel formLine(GameButton[] buttons) {
+        JPanel buttonsLine = new JPanel();
+        GroupLayout groupLayout = new GroupLayout(buttonsLine);
+
+        buttonsLine.setLayout(groupLayout);
+        GroupLayout.ParallelGroup parallelGroup = groupLayout.createParallelGroup();
+        GroupLayout.SequentialGroup sequentialGroup = groupLayout.createSequentialGroup();
+        groupLayout.setAutoCreateGaps(true);
+
+        for (int i = 0; i < fieldSize; i++) {
+            GameButton button = buttons[i];
+            sequentialGroup.addComponent(button.getButton());
+            parallelGroup.addComponent(button.getButton());
+        }
+        groupLayout.setVerticalGroup(parallelGroup);
+        groupLayout.setHorizontalGroup(sequentialGroup);
+        return buttonsLine;
+    }
+
+    /**
+     * creates layout compiling table of stings
+     */
+    private void createLayout(JComponent topBar, JComponent headLabels, JComponent head, JComponent[] buttonsLines) {
+        Container pane = getContentPane();
+        GroupLayout groupLayout = new GroupLayout(pane);
+        pane.setLayout(groupLayout);
+        GroupLayout.ParallelGroup parallelGroup = groupLayout.createParallelGroup();
+        GroupLayout.SequentialGroup sequentialGroup = groupLayout.createSequentialGroup();
+        groupLayout.setAutoCreateContainerGaps(true);
+        groupLayout.setAutoCreateGaps(true);
+
+      //  topBar.setSize(buttonsLines[0].getSize().width,topBar.getHeight());
+     ///   headLabels.setSize(buttonsLines[0].getSize().width, headLabels.getHeight());
+     //   head.setSize(buttonsLines[0].getSize().width, head.getHeight());
+
+        parallelGroup.addComponent(topBar);
+        sequentialGroup.addComponent(topBar);
+
+        parallelGroup.addComponent(headLabels);
+        sequentialGroup.addComponent(headLabels);
+
+        parallelGroup.addComponent(head);
+        sequentialGroup.addComponent(head);
+
+        for (JComponent line : buttonsLines) {
+            parallelGroup.addComponent(line);
+            sequentialGroup.addComponent(line);
+        }
+
+        groupLayout.setHorizontalGroup(parallelGroup);
+        groupLayout.setVerticalGroup(sequentialGroup);
+        
+        //addContainerListener(w -> resizeButtons());
+
+       // groupLayout.linkSize(0, topBar, headLabels, head, buttonsLines[0]);
+    }
+
+    private void resizeButtons() {
+        int size = GameButton.foundSize(getWindowWidth());
+        for ( int string = 0; string < fieldSize; string++) {
+            for ( int row = 0; row < fieldSize; row++) {
+                button[string][row].getButton().setSize(size,size);
+            }
+        }
     }
 
     /**
@@ -207,15 +228,20 @@ public class UserInterface extends JFrame {
         return button[string][row];
     }
 
-    public static GameTextField getPlayer1() {
-        return player1;
+    public static GameTextField getPlayer1Name() {
+        return player1Name;
     }
 
-    public static GameTextField getPlayer2() {
-        return player2;
+    public static GameTextField getPlayer2Name() {
+        return player2Name;
     }
 
     public static GameTextField getWhoMoves() {
         return whoMoves;
     }
+
+    public static int getWindowWidth() {
+        return WINDOW_WIDTH;
+    }
+
 }

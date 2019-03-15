@@ -11,28 +11,22 @@ import static ticTacToe.ui.UserInterface.*;
 class Head {
     JPanel createHead() {
         JPanel head = new JPanel();
-
-
         GroupLayout groupLayout = new GroupLayout(head);
         head.setLayout(groupLayout);
+        groupLayout.setAutoCreateGaps(true);
 
         groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()
-                .addComponent(getPlayer1().getTextField())
-                .addGap(5)
+                .addComponent(getPlayer1Name().getTextField())
                 .addComponent(getWhoMoves().getTextField())
-                .addGap(5)
-                .addComponent(getPlayer2().getTextField())
+                .addComponent(getPlayer2Name().getTextField())
 
         );
 
         groupLayout.setVerticalGroup(groupLayout.createParallelGroup()
-                .addComponent(getPlayer1().getTextField())
+                .addComponent(getPlayer1Name().getTextField())
                 .addComponent(getWhoMoves().getTextField())
-                .addComponent(getPlayer2().getTextField())
+                .addComponent(getPlayer2Name().getTextField())
         );
-
-        groupLayout.linkSize( getPlayer1().getTextField(), getPlayer2().getTextField(), getWhoMoves().getTextField());
-
         return head;
     }
 }
