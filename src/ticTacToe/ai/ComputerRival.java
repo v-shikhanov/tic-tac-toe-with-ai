@@ -63,15 +63,15 @@ public class ComputerRival {
     }
 
     /**
-     *  If learning algorithm now is free and loaded it used.
+     *  If selfExperienced algorithm now is free and loaded it using
      *  @return move coordinate Cell
      */
-    public Cell learning() {
+    public Cell selfExperienced() {
         if (game.isLearningInProcess()) {
             return hard(game.getGameField(), game.getActiveFigure(), game.getActiveFigure());
         } else {
-            if (game.learningAlgorithm.isLoadedFromFile()) {
-                return game.learningAlgorithm.makeMove(game.getGameField());
+            if (game.selfExperiencedAI.isLoadedFromFile()) {
+                return game.selfExperiencedAI.makeMove(game.getGameField());
             } else {
                 return hard(game.getGameField(), game.getActiveFigure(), game.getActiveFigure());
             }

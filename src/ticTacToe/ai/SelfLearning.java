@@ -2,35 +2,53 @@ package ticTacToe.ai;
 
 import ticTacToe.game.*;
 import ticTacToe.ui.UserInterface;
+
+import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static ticTacToe.game.Game.Figure.*;
 import static ticTacToe.ui.UserInterface.game;
 
 /**
- * Class that implements learning process. It just simulate game with two random going computers and writes results
+ * Class that implements self learning process. It just simulate game with two computers and writes results
  */
-public class SelfLearning extends Thread{
+public class SelfLearning extends Thread {
     /**
      * List of fields, converted to long values which were made by computers
      */
     private ArrayList<Long> log = new ArrayList<>();
 
     /**
-     * Instance of learning algorithm class used for fields load etc
-     */
-    private LearningAlgorithm learningAlgorithm = new LearningAlgorithm(game.getFieldSize());
-
-    /**
-     * Number of games which should be played in this learning process
+     * Number of games which should be played in this selfExperienced process
      */
     private int iterations;
 
     /**
+     * Instance of computer rival class using for self-selfExperienced moves simulation
+     */
+    private ComputerRival ai;
+
+    /**
+     * Is a map which contains moves and its rate (updating in learning process).
+     */
+    private Map<Long, Integer> fieldsMap;
+
+    /**
+     * Is a ratio between current learning iteration and common iterations number
+     * when easy making move level changing to medium (to get more different moves)
+     */
+    private static final double MOVE_TYPE_CHANGING_BORDER = 0.7d;
+
+    /**
      * Constructor sets field values to a default
-     * @param iterations number of games which should be played in this learning process
+     * @param iterations number of games which should be played in this selfExperienced process
      */
     public SelfLearning(int iterations) {
         this.iterations = iterations;
+        ai = new ComputerRival();
     }
 
     /**
@@ -39,42 +57,41 @@ public class SelfLearning extends Thread{
     @Override
     public void run() {
         game.setLearningInProcess(true);
-        learningAlgorithm.start();
-
         try {
-            learningAlgorithm.join();
+            game.selfExperiencedAI.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        String message;
-        int i = 0;
-        for (; i < iterations; i++) {
+        fieldsMap = new HashMap<>(game.selfExperiencedAI.getFieldsMap());
+
+        int currentIteration = 0;
+        for ( ; currentIteration < iterations; currentIteration++) {
             log.clear();
-            selfLearningGame();
-            System.out.println("Learning iteration " + i);
+            selfLearningGame(currentIteration);
             if (!game.isLearningInProcess()) {
                 break;
             }
         }
-        learningAlgorithm.save();
-        game.learningAlgorithm.run();
-        message =  "Learning with " + i + " iterations completed. " +
-                " Fields collection size now is " + learningAlgorithm.fieldsMap.keySet().size();
+        save();
+        game.selfExperiencedAI.setFieldsMap(fieldsMap);
+        String message =  "Learning with " + currentIteration + " iterations completed. " +
+                " Fields collection size now is " + fieldsMap.keySet().size();
         System.out.println();
         UserInterface.showMessage(message);
         game.setLearningInProcess(false);
     }
 
     /**
-     * Method makes a simulation of game with random moves
+     * Method makes a simulation of game with random(or medium-level) moves
      */
-    private void selfLearningGame() {
+    private void selfLearningGame(int currentIteration) {
         Game.Figure[][] field = createEmptyCellsField();
         Game.Figure activeFigure = CROSS;
-
+        boolean isEasy;
+        isEasy = currentIteration < iterations * MOVE_TYPE_CHANGING_BORDER;
         while (true) {
-            field = makeMove (field, activeFigure).clone();
+            field = makeMove(field, activeFigure, isEasy).clone();
             if (isGameFinished(field)) {
                 return;
             }
@@ -103,8 +120,15 @@ public class SelfLearning extends Thread{
      * @param activeFigure is a figure which moves now
      * @return field modified with new move
      */
-    private Game.Figure[][] makeMove(Game.Figure[][] field, Game.Figure activeFigure) {
-        Cell cell = new ComputerRival().easy(field);
+    private Game.Figure[][] makeMove(Game.Figure[][] field, Game.Figure activeFigure, boolean isEasy) {
+        Cell cell;
+
+        if (isEasy) {
+            cell = ai.easy(field);
+        } else {
+            cell = ai.medium();
+        }
+
         field[cell.string][cell.row] = activeFigure;
         log.add(new FieldCoder().getCode(field));
         return field;
@@ -119,20 +143,91 @@ public class SelfLearning extends Thread{
         GameResult gameResult = new GameResult();
 
         if (gameResult.checkWin(field, CROSS)) {
-            learningAlgorithm.updateFieldsMap(CROSS, log);
+            updateFieldsMap(CROSS, log);
             return true;
         }
 
         if (gameResult.checkWin(field, ZERO)) {
-            learningAlgorithm.updateFieldsMap(ZERO, log);
+            updateFieldsMap(ZERO, log);
             return true;
         }
 
         if (gameResult.emptyCells(field).isEmpty()) {
-            learningAlgorithm.updateFieldsMap(EMPTY,log);
+            updateFieldsMap(EMPTY,log);
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Method updates fields collection and rates of existing elements
+     * @param result which figure wins- X or O
+     * @param movesLog list of fields converted to long. it'string moves that were made in this game
+     */
+    public void updateFieldsMap(Game.Figure result, List<Long> movesLog) {
+        int deltaRate = 0;
+
+        if (result.equals(CROSS)) {
+            deltaRate = 1;
+        } else if (result.equals(ZERO)){
+            deltaRate = -1;
+        }
+
+        for (long move : movesLog) {
+            Integer prevRate = fieldsMap.putIfAbsent(move, deltaRate);
+            if (prevRate != null) {
+                prevRate += deltaRate;
+                fieldsMap.put(move, prevRate);
+            }
+        }
+    }
+
+    /**
+     * Method saved fields map to file
+     */
+    private void save() {
+        File savedFields;
+        switch (game.getFieldSize()) {
+            case 3 : {
+                savedFields = new File("fields3x3.ser");
+                break;
+            }
+            case 4 : {
+                savedFields = new File("fields4x4.ser");
+                break;
+            }
+            case 5 : {
+                savedFields = new File("fields5x5.ser");
+                break;
+            }
+            case 6 : {
+                savedFields = new File("fields6x6.ser");
+                break;
+            }
+            default : savedFields = new File("fields3x3.ser");
+        }
+
+        if (!savedFields.isFile()) {
+            try {
+                savedFields.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("\nFile creation is impossible!");
+                return;
+            }
+        }
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(savedFields);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+
+            objectOutputStream.writeObject(fieldsMap);
+            objectOutputStream.close();
+            System.out.println("Moves saved to file, size " + fieldsMap.keySet().size());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

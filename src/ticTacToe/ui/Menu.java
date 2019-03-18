@@ -67,11 +67,11 @@ import static ticTacToe.ui.UserInterface.game;
      */
     private JMenu menuPlayerCreator(String name, int playerID, boolean isComputer) {
         JMenu file = new JMenu(name);
-        JCheckBoxMenuItem computerRival = new JCheckBoxMenuItem("Play with computer");
+        JCheckBoxMenuItem computerRival = new JCheckBoxMenuItem("Player is AI");
         JMenuItem easy = new JRadioButtonMenuItem("Easy");
         JMenuItem medium = new JRadioButtonMenuItem("Medium");
         JMenuItem hard = new JRadioButtonMenuItem("Hard");
-        JMenuItem learning = new JRadioButtonMenuItem("Self-learning");
+        JMenuItem learning = new JRadioButtonMenuItem("Self-experienced AI");
 
         computerRival.addActionListener(actionEvent -> {
             game.getPlayer(playerID).setIsComputer(computerRival.getState());
@@ -196,7 +196,7 @@ import static ticTacToe.ui.UserInterface.game;
     }
 
     /**
-     * Method calling learning process thread if it's not started yet and nobody playing at this moment
+     * Method calling selfExperienced process thread if it's not started yet and nobody playing at this moment
      * or prints messages that it's impossible now
      */
     private void startLearning() {
@@ -213,7 +213,7 @@ import static ticTacToe.ui.UserInterface.game;
         }
         int iterations = 50000;
         String iterationsGot = JOptionPane.showInputDialog(null,
-                "Please, select learning iterations number. By default is 50000.");
+                "Please, select self-learning iterations number. By default is 50000.");
 
         if ( iterationsGot == null) {
             return;
