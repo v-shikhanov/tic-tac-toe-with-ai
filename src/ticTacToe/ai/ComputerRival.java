@@ -1,62 +1,50 @@
 package ticTacToe.ai;
 
 import ticTacToe.game.Cell;
+import ticTacToe.game.Game;
 import ticTacToe.game.GameResult;
-import ticTacToe.ui.UserInterface;
-
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
-
-import static ticTacToe.game.Game.CROSS;
-import static ticTacToe.game.Game.ZERO;
 import static ticTacToe.ui.UserInterface.game;
 
 /**
- *  Class for making moves against human or another computer
+ * Class for making moves against human or another computer
 */
 public class ComputerRival {
-
-     /**
-     * Easy level method - randomly selects cell in field
-      * @param field where should be found a coordinate of move
-      * @return move coordinate Cell
+    /**
+     * Qnt of empty cells when minimax algorithm working good.(If number of empty cells is greater than limit
+     * waiting of results is too long
      */
-    public Cell easy(int[][] field) {
+    private static final int MINI_MAX_DEPTH_LIMIT = 8;
+
+    /**
+    * Easy level method - randomly selects cell in field
+    * @param field where should be found a coordinate of move
+    * @return coordinate of cell to make move
+    */
+    public Cell easy(Game.Figure[][] field) {
         List<Cell> emptyCells = new GameResult().emptyCells(field);
-        int size = emptyCells.size();
-        if (size > 0) {
-            return emptyCells.get(new Random().nextInt(size));
-        } else {
-            return null;
-        }
+        return emptyCells.get(new Random().nextInt(emptyCells.size()));
     }
 
     /**
-     * method calls scanning of sequence, if it not found making a random move
-     * @return move coordinate Cell
+     * Method calls scanning of sequence of equal non empty cells with one empty one - horizontal,vertical, diagonal
+     * for example for string (OO.) where . is empty, method will return coordinate of this empty cell. So method able to
+     * finish game if winning move exists or prevent winning of opponent if winning move exists for him.
+     * If this cell not found, method goes to easy level(random move).
+     * @return coordinate of cell to make move
      * @see ComputerRival
      */
     public Cell medium() {
         MediumLevel mediumLevel = new MediumLevel();
-        int valueOfComputer = game.getActiveFigure();
-        int valueOfHuman;
-        Cell cell = mediumLevel.scan(valueOfComputer);
-        if (cell != null) {
-            return cell;
+        Game.Figure valueOfComputer = game.getActiveFigure();
+        Optional<Cell> cell = Optional.ofNullable(mediumLevel.scan(valueOfComputer));
+        if (cell.isPresent()) {
+            return cell.get();
         }
-
-        if (valueOfComputer == CROSS) {
-            valueOfHuman = ZERO;
-        } else {
-            valueOfHuman = CROSS;
-        }
-
-        cell = mediumLevel.scan(valueOfHuman);
-        if (cell != null) {
-            return cell;
-        }
-
-        return easy(game.getFieldValues());
+        cell = Optional.ofNullable(mediumLevel.scan(game.getOppositeFigure(valueOfComputer)));
+        return cell.orElseGet(() -> easy(game.getGameField()));
     }
 
     /**
@@ -65,17 +53,13 @@ public class ComputerRival {
      * @param activeFigure figure which should moves now
      * @param playerFigure is a figure of player which considering
      *                     mininmax algorithm
-     * @return move coordinate Cell
+     * @return coordinate of cell to make move
      */
-    public Cell hard(int[][] field, int activeFigure, int playerFigure) {
-
-        if (new GameResult().emptyCells(game.getFieldValues()).size() > 8) {
-            return easy(game.getFieldValues());
+    public Cell hard(Game.Figure[][] field, Game.Figure activeFigure, Game.Figure playerFigure) {
+        if (new GameResult().emptyCells(game.getGameField()).size() > MINI_MAX_DEPTH_LIMIT) {
+            return medium();
         }
-
-
-        Cell cell = new MiniMax().minimax(field, activeFigure, playerFigure);
-        return cell;
+        return new MiniMax().minimax(field, activeFigure, playerFigure);
     }
 
     /**
@@ -84,25 +68,13 @@ public class ComputerRival {
      */
     public Cell learning() {
         if (game.isLearningInProcess()) {
-            return hard(game.getFieldValues(), game.getActiveFigure(), game.getActiveFigure());
+            return hard(game.getGameField(), game.getActiveFigure(), game.getActiveFigure());
         } else {
-            if ( game.learningAlgorithm.isLoadedFromFile()) {
-                return game.learningAlgorithm.makeMove(game.getFieldValues());
+            if (game.learningAlgorithm.isLoadedFromFile()) {
+                return game.learningAlgorithm.makeMove(game.getGameField());
             } else {
-                return hard(game.getFieldValues(), game.getActiveFigure(), game.getActiveFigure());
+                return hard(game.getGameField(), game.getActiveFigure(), game.getActiveFigure());
             }
         }
-    }
-
-    /**
-     * This method updates a text inside a button after computer makes a move, and disable it for user
-     *
-     * @param string number in field matrix
-     * @param row number in field matrix
-     */
-    public static void dataUpdate(int string, int row) {
-        UserInterface.getButton(string, row).printFieldElement();
-        UserInterface.getButton(string, row).setButtonEnabled(false);
-        game.nextMove(string, row, game.getActiveFigure());
     }
 }

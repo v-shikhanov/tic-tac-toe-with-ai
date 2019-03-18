@@ -1,49 +1,38 @@
 package ticTacToe.ai;
 
 import ticTacToe.game.Cell;
+import ticTacToe.game.Game;
 import ticTacToe.game.GameResult;
-
 import java.util.List;
-
-import static ticTacToe.game.Game.*;
+import static ticTacToe.game.Game.Figure.*;
+import static ticTacToe.ui.UserInterface.game;
 
 /**
- *  Class that implements algorithm minimax to find the best move *
+ * Class that implements algorithm minimax to find the best move *
  */
 public class MiniMax extends GameResult {
     /**
-     * minimax method that completes recursively until the terminal game state will not found
-     *
-     * a result of this algorithm work is a tree with all possible game combinations from which selected move with
-     * minimum probability of win for user and maximum for computer
+     * Minimax method that completes recursively until the terminal game state will not found.
+     * A result of this algorithm work is a tree with all possible game combinations from which selected move with
+     * minimum probability of checkWin for opponent and maximum for computer
      *
      * @param field game field that should be analysed
      * @param activeFigure figure that should moves now
      * @param currentPlayerFigure player figure that should moves now
-     * @return cell with best move coordinates and it rate
+     * @return cell with best move coordinates and its rate
      */
-    public Cell minimax (int[][] field, int activeFigure, int currentPlayerFigure) {
+    public Cell minimax (Game.Figure[][] field, Game.Figure activeFigure, Game.Figure currentPlayerFigure) {
         Cell cell = new Cell(0,0);
-        int computer;
-        int rival;
-        int nodeRate;
-        int bestNodeIndex = 0;
-
+        Game.Figure computer = currentPlayerFigure;
+        Game.Figure opponent = game.getOppositeFigure(currentPlayerFigure);
         List<Cell> emptyCells = emptyCells(field);
+        int bestNodeIndex = 0;
+        int nodeRate;
 
-
-        if ( currentPlayerFigure == CROSS ) {
-            computer = CROSS;
-            rival = ZERO;
-        } else {
-            computer = ZERO;
-            rival = CROSS;
-        }
-
-        if (win(field, computer)) {
+        if (checkWin(field, computer)) {
             cell.rate = 10;
             return cell;
-        } else if (win(field, rival)) {
+        } else if (checkWin(field, opponent)) {
             cell.rate = -10;
             return cell;
         } else if (emptyCells(field).isEmpty()) {
@@ -53,14 +42,14 @@ public class MiniMax extends GameResult {
 
         for ( int i = 0; i < emptyCells.size(); i++) {
             cell= emptyCells.get(i);
-            field[cell.s][cell.r] = activeFigure;
+            field[cell.string][cell.row] = activeFigure;
 
             if (activeFigure == computer) {
-                cell.rate = minimax(field, rival, currentPlayerFigure).rate ;
+                cell.rate = minimax(field, opponent, currentPlayerFigure).rate ;
             } else {
                 cell.rate  = minimax(field, computer, currentPlayerFigure).rate ;
             }
-            field[cell.s][cell.r] = EMPTY;
+            field[cell.string][cell.row] = EMPTY;
             emptyCells.set(i, cell);
         }
 
