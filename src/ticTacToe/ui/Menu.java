@@ -14,16 +14,15 @@ import static ticTacToe.ui.UserInterface.game;
  *  Class for menu bar user interface element creation
  * @see UserInterface
  */
- class Menu extends JPanel{
-    private Font font = new Font(null,Font.BOLD,15);
-
+ class Menu extends JPanel {
     /**
      * Method creates menu bar with next menus - game, move, player1, player2
      * @return bar
      */
-    public JMenuBar menuCreator(){
+    public JMenuBar menuCreator() {
         JMenuBar menuBar = new JMenuBar();
         JMenu game = menuGameCreator();
+        Font font = new Font(null, Font.BOLD, 15);
         JMenu p1 = menuPlayerCreator("Player 1  |",1,false);
         JMenu p2 = menuPlayerCreator("Player 2", 2, true);
         JMenu first = moveCreator();
@@ -37,7 +36,6 @@ import static ticTacToe.ui.UserInterface.game;
         menuBar.add(first);
         menuBar.add(p1);
         menuBar.add(p2);
-
         return menuBar;
     }
 
@@ -45,35 +43,30 @@ import static ticTacToe.ui.UserInterface.game;
      * Method creates game menu
      * @return game menu
      */
-    private JMenu menuGameCreator(){
+    private JMenu menuGameCreator() {
         JMenu file = new JMenu("Game  |");
-
         JMenuItem start = new JMenuItem("Start game");
         JMenuItem restart = new JMenuItem("Restart game");
         JMenuItem stop = new JMenuItem("Stop game");
-
-
-        start.addActionListener( actionEvent -> game.startTheGame());
-        restart.addActionListener( actionEvent -> game.restartTheGame());
-        stop.addActionListener( actionEvent -> game.stopGame(true));
+        start.addActionListener(actionEvent -> game.startTheGame());
+        restart.addActionListener(actionEvent -> game.restartTheGame());
+        stop.addActionListener(actionEvent -> game.stopGame(true));
 
         file.add(start);
         file.add(restart);
         file.add(stop);
-
         return file;
     }
 
     /**
      * Method creates player menu
-     * @param name
-     * @param playerID
-     * @param isComputer
+     * @param name name of menu
+     * @param playerID player id 1, or 2
+     * @param isComputer is this player computer or human
      * @return player menu
      */
-    private JMenu menuPlayerCreator(String name, int playerID, boolean isComputer){
+    private JMenu menuPlayerCreator(String name, int playerID, boolean isComputer) {
         JMenu file = new JMenu(name);
-
         JCheckBoxMenuItem computerRival = new JCheckBoxMenuItem("Play with computer");
         JMenuItem easy = new JRadioButtonMenuItem("Easy");
         JMenuItem medium = new JRadioButtonMenuItem("Medium");
@@ -130,7 +123,6 @@ import static ticTacToe.ui.UserInterface.game;
         file.add(medium);
         file.add(hard);
         file.add(learning);
-
         return file;
     }
 
@@ -138,24 +130,20 @@ import static ticTacToe.ui.UserInterface.game;
      * Menu move creator
      * @return menu move
      */
-    private JMenu moveCreator(){
+    private JMenu moveCreator() {
         JMenu file = new JMenu("Move   |");
-
         JMenu firstMoveSubmenu = firstMoveSubmenu();
         JMenu selfLearnSubmenu = selfLearnSubmenu();
-
-
         file.add(firstMoveSubmenu);
         file.add(selfLearnSubmenu);
-
         return file;
     }
 
     /**
-     * method creates submenu which using for selecting which player should go first
+     * Method creates submenu which using for selecting which player should go first
      * @return first move submenu
      */
-    private JMenu firstMoveSubmenu(){
+    private JMenu firstMoveSubmenu() {
         JMenu submenu = new JMenu("First move selection");
 
         JLabel label = new JLabel("  First move player selection");
@@ -190,7 +178,7 @@ import static ticTacToe.ui.UserInterface.game;
 
     /**
      * Method creates submenu for control selflearn process
-     * @return
+     * @return self learn submenu
      */
     private JMenu selfLearnSubmenu(){
         JMenu submenu = new JMenu("Self-learning");
@@ -208,7 +196,8 @@ import static ticTacToe.ui.UserInterface.game;
     }
 
     /**
-     *  method starts learning process thread if it'string not already started and nobody playing at this moment
+     * Method calling learning process thread if it's not started yet and nobody playing at this moment
+     * or prints messages that it's impossible now
      */
     private void startLearning() {
         if (game.isGameStarted()) {

@@ -1,11 +1,10 @@
 package ticTacToe.ui;
 
 import javax.swing.*;
-
 import static ticTacToe.ui.UserInterface.*;
 
 /**
- *  Class for head User interface element creation
+ * Class for head User interface element creation
  * @see UserInterface
  */
 class Head {

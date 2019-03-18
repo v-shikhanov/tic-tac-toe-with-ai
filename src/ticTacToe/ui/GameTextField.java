@@ -8,7 +8,6 @@ import java.awt.*;
  * @see UserInterface
  */
 public class GameTextField extends JFrame {
-
     private JTextField text = new JTextField();
 
     GameTextField(String text, boolean setEditable, boolean enableBorders, Font font) {

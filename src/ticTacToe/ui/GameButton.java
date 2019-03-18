@@ -11,7 +11,6 @@ import static ticTacToe.ui.UserInterface.game;
  * Class for Game Button ui element, contains button, and it coordinate according to field matrix
  */
 public class GameButton extends JFrame{
-
     private JButton button = new JButton();
     private int string;
     private int row;
@@ -25,12 +24,12 @@ public class GameButton extends JFrame{
             case 4 : fontSize = 90; break;
             case 5 : fontSize = 60; break;
             case 6 : fontSize = 45; break;
-            default : fontSize = 15; break;
+            default : fontSize = 45; break;
         }
         Font font = new Font(null,Font.BOLD,fontSize);
         Dimension dimension = new Dimension(size,size);
         button.setMinimumSize(new Dimension(dimension));
-      //  button.setMaximumSize(new Dimension(dimension));
+        button.setMaximumSize(new Dimension(dimension));
         button.setFont(font);
         button.addActionListener( actionEvent -> getUserSelection());
     }
@@ -87,11 +86,11 @@ public class GameButton extends JFrame{
     /**
      * Method founds size of button depending on field size (for field good look)
      * @param qnt quantity of buttons in one string
-     * @return
+     * @return size of button for current field configuration
      */
     public static int foundSize(int qnt) {
-       // int width = 445;
-        //       // return ((width - 5 * (qnt - 1)) / qnt) -1;
-       return ((UserInterface.getWindowWidth() - 5 * (qnt - 1) - 35) / qnt) - 1;
+       int autoGapSize = 5;
+       int autoContainerGapSize = 40;
+       return ((UserInterface.getWindowWidth() - autoGapSize * (qnt - 1) - autoContainerGapSize) / qnt);
     }
 }

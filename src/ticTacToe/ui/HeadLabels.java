@@ -9,7 +9,6 @@ import java.awt.*;
  * @see UserInterface
  */
  class HeadLabels {
-
      JPanel createHeadLabels() {
         JPanel head = new JPanel();
         Font font = new Font(null,Font.BOLD,13);
@@ -23,15 +22,12 @@ import java.awt.*;
 
         GroupLayout groupLayout = new GroupLayout(head);
         head.setLayout(groupLayout);
-       // groupLayout.setAutoCreateGaps(true);
+        groupLayout.setAutoCreateGaps(true);
 
         groupLayout.setHorizontalGroup(groupLayout.createSequentialGroup()
                 .addComponent(player1Label.getTextField())
-                .addGap(7)
                 .addComponent(whoMovesLabel.getTextField())
-                .addGap(7)
                 .addComponent(player2Label.getTextField())
-
         );
 
         groupLayout.setVerticalGroup(groupLayout.createParallelGroup()
@@ -39,9 +35,6 @@ import java.awt.*;
                 .addComponent(whoMovesLabel.getTextField())
                 .addComponent(player2Label.getTextField())
         );
-
-       // groupLayout.linkSize(player1Label.getTextField(), player2Label.getTextField(),whoMovesLabel.getTextField());
-
         return head;
     }
 }

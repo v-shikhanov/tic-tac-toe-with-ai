@@ -9,7 +9,6 @@ import java.util.Random;
  * This class saves all game settings, and current parameters
  */
 public class Game {
-
     /**
      * Instance of learning algorithm class using in game.
      */

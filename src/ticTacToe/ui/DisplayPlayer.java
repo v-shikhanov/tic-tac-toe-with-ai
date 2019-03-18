@@ -9,7 +9,6 @@ import static ticTacToe.ui.UserInterface.game;
  * Class for indication which player should make a move
  */
 public class DisplayPlayer {
-
     /**
      * Base method which changed name of active player in text field "Now moves"
      * and coloring names of players depending of game turn

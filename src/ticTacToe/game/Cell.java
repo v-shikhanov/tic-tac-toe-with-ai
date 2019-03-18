@@ -4,7 +4,6 @@ import ticTacToe.ai.MiniMax;
 
 /**
  * Class contains coordinate and rate of field cell
- *
  * @see MiniMax
  * @see ticTacToe.ai.SelfLearning
  */

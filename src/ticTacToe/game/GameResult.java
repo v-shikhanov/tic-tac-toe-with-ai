@@ -11,7 +11,6 @@ import static ticTacToe.ui.UserInterface.game;
  *  Class for field analyse and winner detecting
  */
 public class GameResult {
-
     /**
      * Method checks game checkWin and tie for players 1 and 2
      */

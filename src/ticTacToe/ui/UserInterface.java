@@ -4,6 +4,7 @@ import ticTacToe.game.Game;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
 
 /**
  * Class that implements UI
@@ -50,7 +51,6 @@ public class UserInterface extends JFrame {
      */
     public UserInterface(int fieldSize) {
         Dimension dimension = new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT);
-
         this.fieldSize = fieldSize;
         game =  new Game(fieldSize);
         button = new GameButton[fieldSize][fieldSize];
@@ -60,8 +60,7 @@ public class UserInterface extends JFrame {
         createGameFieldUI();
         game.updateField(true, false);
         setSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        //setResizable(false);
-
+        setResizable(false);
         setMinimumSize(dimension);
         setTitle("Awesome tic-tac");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,23 +71,23 @@ public class UserInterface extends JFrame {
     }
 
     /**
-     * Methods bounds buttons to matrix, creates bars of menu,labels, players name and buttons     *
+     * Methods bounds buttons to matrix, creates bars of menu,labels, players name and buttons
      */
     private void createGameFieldUI() {
         JPanel topBar = createTopBar();
         JPanel headLabels = new HeadLabels().createHeadLabels();
         JPanel head = new Head().createHead();
-        JPanel[] buttonsLine = new JPanel[fieldSize];
+        JPanel[] buttonsLines = new JPanel[fieldSize];
         int btnSize = GameButton.foundSize(fieldSize);
 
         for ( int string = 0; string < fieldSize; string++) {
             for ( int row = 0; row < fieldSize; row++) {
                 button[string][row] = new GameButton(string, row, btnSize);
             }
-            buttonsLine[string] = formLine(button[string]);
+            buttonsLines[string] = formLine(button[string]);
         }
 
-        createLayout(topBar, headLabels, head, buttonsLine);
+        createLayout(buttonsLines, topBar, headLabels, head);
     }
 
     /**
@@ -146,9 +145,9 @@ public class UserInterface extends JFrame {
     }
 
     /**
-     * creates layout compiling table of stings
+     * Method creates layout compiling table of stings
      */
-    private void createLayout(JComponent topBar, JComponent headLabels, JComponent head, JComponent[] buttonsLines) {
+    private void createLayout(JComponent[] buttonsLines, JComponent... components) {
         Container pane = getContentPane();
         GroupLayout groupLayout = new GroupLayout(pane);
         pane.setLayout(groupLayout);
@@ -157,18 +156,10 @@ public class UserInterface extends JFrame {
         groupLayout.setAutoCreateContainerGaps(true);
         groupLayout.setAutoCreateGaps(true);
 
-      //  topBar.setSize(buttonsLines[0].getSize().width,topBar.getHeight());
-     ///   headLabels.setSize(buttonsLines[0].getSize().width, headLabels.getHeight());
-     //   head.setSize(buttonsLines[0].getSize().width, head.getHeight());
-
-        parallelGroup.addComponent(topBar);
-        sequentialGroup.addComponent(topBar);
-
-        parallelGroup.addComponent(headLabels);
-        sequentialGroup.addComponent(headLabels);
-
-        parallelGroup.addComponent(head);
-        sequentialGroup.addComponent(head);
+        for (JComponent component : components) {
+            parallelGroup.addComponent(component);
+            sequentialGroup.addComponent(component);
+        }
 
         for (JComponent line : buttonsLines) {
             parallelGroup.addComponent(line);
@@ -177,19 +168,6 @@ public class UserInterface extends JFrame {
 
         groupLayout.setHorizontalGroup(parallelGroup);
         groupLayout.setVerticalGroup(sequentialGroup);
-        
-        //addContainerListener(w -> resizeButtons());
-
-       // groupLayout.linkSize(0, topBar, headLabels, head, buttonsLines[0]);
-    }
-
-    private void resizeButtons() {
-        int size = GameButton.foundSize(getWindowWidth());
-        for ( int string = 0; string < fieldSize; string++) {
-            for ( int row = 0; row < fieldSize; row++) {
-                button[string][row].getButton().setSize(size,size);
-            }
-        }
     }
 
     /**
@@ -222,7 +200,7 @@ public class UserInterface extends JFrame {
     }
 
     /**
-     * getters of class
+     * Getters of class
      */
     public static GameButton getButton(int string, int row) {
         return button[string][row];
