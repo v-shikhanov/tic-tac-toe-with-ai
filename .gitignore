@@ -31,3 +31,5 @@ git.properties
 
 #Temporary files
 *.tmp
+
+*.ser

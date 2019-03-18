@@ -38,7 +38,7 @@ public class Player {
                 case EASY: cell = computerRival.easy(game.getGameField());break;
                 case MEDIUM: cell = computerRival.medium(); break;
                 case HARD: cell = computerRival.hard(game.getGameField(), game.getActiveFigure(), figure); break;
-                case LEARNING: cell = computerRival.learning(); break;
+                case LEARNING: cell = computerRival.selfExperienced(); break;
             }
             UserInterface.buttonsUpdate(cell.string, cell.row);
         }

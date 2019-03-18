@@ -1,6 +1,6 @@
 package ticTacToe.game;
 
-import ticTacToe.ai.LearningAlgorithm;
+import ticTacToe.ai.SelfExperiencedAI;
 import ticTacToe.ui.DisplayPlayer;
 import ticTacToe.ui.UserInterface;
 import javax.swing.*;
@@ -10,9 +10,9 @@ import java.util.Random;
  */
 public class Game {
     /**
-     * Instance of learning algorithm class using in game.
+     * Instance of selfExperienced algorithm class using in game.
      */
-    public LearningAlgorithm learningAlgorithm;
+    public SelfExperiencedAI selfExperiencedAI;
 
     /**
      * Using for game setting who moves first
@@ -70,7 +70,7 @@ public class Game {
     private Figure[][] gameField;
 
     /**
-     * field contains information about learning process. is it active or not. To avoid problems with multiply
+     * field contains information about selfExperienced process. is it active or not. To avoid problems with multiply
      * threading
      */
     private boolean learningInProcess;
@@ -96,8 +96,8 @@ public class Game {
         gameStarted = false;
         gameField = new Figure[fieldSize][fieldSize];
         activeFigure = Figure.CROSS;
-        learningAlgorithm = new LearningAlgorithm(fieldSize);
-        learningAlgorithm.start();
+        selfExperiencedAI = new SelfExperiencedAI(fieldSize);
+        selfExperiencedAI.start();
     }
 
     /**
@@ -119,7 +119,7 @@ public class Game {
 
         if (learningInProcess && (player1.getLevel() == Levels.LEARNING ||  player2.getLevel() == Levels.LEARNING)) {
             JOptionPane.showMessageDialog(null,"Learning in process. " +
-                    "Please change game level to any another, or wait until learning will be finished.");
+                    "Please change game level to any another, or wait until selfExperienced will be finished.");
             return;
         }
 

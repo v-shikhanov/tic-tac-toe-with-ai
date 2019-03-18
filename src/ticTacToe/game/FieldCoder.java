@@ -1,9 +1,11 @@
 package ticTacToe.game;
 
+import ticTacToe.ai.SelfExperiencedAI;
+
 /**
  *  This class using to convert two-level array to a long number (for moves knowledge base size optimisation)
  *
- * @see ticTacToe.ai.LearningAlgorithm
+ * @see SelfExperiencedAI
  */
 public class FieldCoder {
     /**

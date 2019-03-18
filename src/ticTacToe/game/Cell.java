@@ -10,7 +10,7 @@ import ticTacToe.ai.MiniMax;
 public class Cell {
     public int string;
     public int row;
-    public int rate;
+    public Integer rate;
 
     public Cell(int string, int row) {
         this.string = string;
